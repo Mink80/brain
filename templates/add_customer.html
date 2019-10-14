@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="jumbotron">
+    <h1>Add customer</h1>
+    <form action="{{url_for('thank_you')}}" method="get">
+      <label for="custname">Customer Name</label>
+      <input type="text" name="custname" placeholder="name">
+      <input type="submit" value="Add">
+    </form>
+  </div>
+
+{% endblock %}

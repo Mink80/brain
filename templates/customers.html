@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Customers</title>
+  </head>
+  <body>
+    <h1>Customers</h1>
+    <h2>{{foo}}
+    <ul>
+        {% for item in customers %}
+        <li>{{item}}</li>
+        {% endfor %}
+    </ul>
+
+    {% if "BMW" in customers %}
+    <p>BMW is in customers list</p>
+    {% elif "Daimler" in customers %}
+    <p>Daimler is in the list</p>
+    {% else %}
+    <p>BMW is not in the list</p>
+    {% endif %}
+
+  </body>
+</html>
