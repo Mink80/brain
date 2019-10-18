@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <!--
   <div class="jumbotron">
     <h1>Add customer</h1>
     <form action="{{url_for('thank_you')}}" method="get">
@@ -9,5 +10,20 @@
       <input type="submit" value="Add">
     </form>
   </div>
+  -->
 
+<div class="jumbotron">
+{% if name %}
+    You entered {{name}}
+{% else %}
+    Please enter something
+{% endif %}
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }}
+    {{ form.name(class="") }}
+    {{ form.submit(class="btn btn-primary btn-sm") }}
+  </form>
+</div>
 {% endblock %}
