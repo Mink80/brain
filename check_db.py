@@ -1,4 +1,5 @@
-from brain import db, Customer, Task, Partner, Project, Ball, Weekly
+from Brain import db
+from Brain.models import Customer, Task, Partner, Project
 
 ### Print all Tasks
 print ("\nTasks:")

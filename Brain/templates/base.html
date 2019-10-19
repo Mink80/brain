@@ -19,11 +19,11 @@
         <ul class="navbar-nav mr-auto">
 
           <li class="nav-item">
-            <a class="nav-link" href="{{url_for("tasks")}}">Tasks</a>
+            <a class="nav-link" href="{{url_for('tasks.index')}}">Tasks</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="{{url_for("customers")}}">Customers</a>
+            <a class="nav-link" href="{{url_for('customers.index')}}">Customers</a>
           </li>
 
           <li class="nav-item">
@@ -31,7 +31,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="{{url_for("partners")}}">Partner</a>
+            <a class="nav-link" href="{{url_for('partners.index')}}">Partner</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -39,7 +39,7 @@
               Tools
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{{url_for("weekly")}}">Weekly</a>
+              <a class="dropdown-item" href="#">Weekly</a>
             </div>
           </li>
 
