@@ -4,7 +4,7 @@ from brain import db, Customer, Task, Partner, Project, Ball, Weekly
 db.create_all()
 
 ### Create some Customers
-internal = Customer(name="Intenal", comment="For Netapp intenal tasks")
+internal = Customer(name="Internal", comment="For Netapp intenal tasks")
 bmw = Customer(name="BMW")
 daimler = Customer(name="Daimler", comment="schwierig")
 siemens = Customer(name="Siemens", comment="focus account")
