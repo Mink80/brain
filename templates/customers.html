@@ -1,25 +1,39 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Customers</title>
-  </head>
-  <body>
-    <h1>Customers</h1>
-    <h2>{{foo}}
-    <ul>
-        {% for item in customers %}
-        <li>{{item}}</li>
-        {% endfor %}
-    </ul>
+{% extends "base.html" %}
+{% block content %}
 
-    {% if "BMW" in customers %}
-    <p>BMW is in customers list</p>
-    {% elif "Daimler" in customers %}
-    <p>Daimler is in the list</p>
-    {% else %}
-    <p>BMW is not in the list</p>
-    {% endif %}
+<div class="card-body">
+      <h5>Customers</h5>
+</div>
 
-  </body>
-</html>
+<div class="container">
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Projects</th>
+      <th scope="col">Tasks</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in customers %}
+    <tr>
+      <td>{{c.name}}</td>
+      <td>
+        {% if c.comment != "" %}
+          {{c.comment}}
+        {% else %}
+          -
+        {% endif %}
+        </td>
+      <td>{{c.tasks.count()}}</td>
+      <td>{{c.projects.count()}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+
+{% endblock %}

@@ -9,7 +9,6 @@ import os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate # pip install Flask-Migrate
-from forms import TaskForm
 from enum import Enum
 import datetime
 
@@ -23,6 +22,8 @@ app.config['SECRET_KEY'] = 'foobar'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir,"data.sqlite")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+
 
 # for DB Migration
 # before running migrations execute in cmd.exe:
@@ -73,6 +74,12 @@ class Task(db.Model):
     def __repr__(self):
         return f"TaskID: {self.id}, Text: {self.text}, CDate: {self.cdate}, Ball: {self.ball}, DueDate: {self.duedate}, Parent: {self.parent}, Weekly: {self.weekly}, Customer: {self.customer_id}, Prject: {self.project_id}"
 
+    def customer_name(self):
+        return(Customer.query.get(self.customer_id).name)
+
+    def project_name(self):
+        return(Project.query.get(self.project_id).name)
+
 class Customer(db.Model):
     __tablename__ = 'customers'
     id = db.Column(db.Integer, primary_key=True)
@@ -88,6 +95,7 @@ class Customer(db.Model):
     def __repr__(self):
         return f"ID: {self.id}, Customer: {self.name}, Comment: {self.comment}"
 
+
 class Partner(db.Model):
     __tablename__ = 'partners'
     id = db.Column(db.Integer, primary_key=True)
@@ -101,6 +109,7 @@ class Partner(db.Model):
 
     def __repr__(self):
         return f"Partner {self.name}"
+
 
 class Project(db.Model):
     __tablename__ = 'projects'
@@ -120,6 +129,9 @@ class Project(db.Model):
     def __repr__(self):
         return f"ProjectID: {self.id}, Name: {self.name}, OPP: {self.opp}, Customer: {self.customer_id}, Partner {self.partner_id}"
 
+# Because Customer is used on TaskForm
+from forms import TaskForm
+
 # Routes
 @app.route('/')
 def index():
@@ -129,6 +141,10 @@ def index():
 @app.route('/tasks', methods=['GET','POST'])
 def tasks():
     form = TaskForm()
+    all_tasks = Task.query.all()
+    all_customers = Customer.query.all()
+    all_projects = Project.query.all()
+
     if form.validate_on_submit():
         #session['name'] = form.name.data
         #session['weekly_relevant'] = form.weekly_relevant.data
@@ -137,7 +153,7 @@ def tasks():
         flash('you clicked submit')
         return redirect(url_for('tasks'))
 
-    return render_template('tasks.html', form=form)
+    return render_template('tasks.html', tasks=all_tasks, form=form)
 
 @app.route('/task_added')
 def task_added():
@@ -145,9 +161,13 @@ def task_added():
 
 @app.route('/customers')
 def customers():
-    foo = "bar"
-    mycustomers = ["BMW", "VW", "Daimler"]
-    return render_template("customers.html",my_var=foo, customers=mycustomers)
+    all_customers = Customer.query.all()
+    return render_template("customers.html", customers=all_customers)
+
+@app.route('/partners')
+def partners():
+    all_partners = Partner.query.all()
+    return render_template("partners.html", partners=all_partners)
 
 @app.route('/add_customer', methods=['GET','POST'])
 def add_customer():

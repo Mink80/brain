@@ -19,15 +19,11 @@
         <ul class="navbar-nav mr-auto">
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Dashboard</a>
-          </li>
-
-          <li class="nav-item">
             <a class="nav-link" href="{{url_for("tasks")}}">Tasks</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Customers</a>
+            <a class="nav-link" href="{{url_for("customers")}}">Customers</a>
           </li>
 
           <li class="nav-item">
@@ -35,7 +31,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Partner</a>
+            <a class="nav-link" href="{{url_for("partners")}}">Partner</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -49,10 +45,12 @@
 
         </ul>
 
+        <!---
         <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        --->
       </div>
     </nav>
 
@@ -60,9 +58,11 @@
 
     {% endblock %}
 
+    <p><br></p>
+
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Brain!</h5>
+        <h6 class="card-title">Brain!</h6>
         <p class="card-text">(c) 2019 by Kai Saßmannshausen {{'<'}}kai@sassie.de{{'>'}}</p>
       </div>
     </div>

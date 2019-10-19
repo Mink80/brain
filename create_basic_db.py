@@ -4,11 +4,12 @@ from brain import db, Customer, Task, Partner, Project, Ball, Weekly
 db.create_all()
 
 ### Create some Customers
+internal = Customer(name="Intenal", comment="For Netapp intenal tasks")
 bmw = Customer(name="BMW")
 daimler = Customer(name="Daimler", comment="schwierig")
 siemens = Customer(name="Siemens", comment="focus account")
 
-db.session.add_all([bmw,daimler,siemens])
+db.session.add_all([internal,bmw,daimler,siemens])
 db.session.commit()
 
 ### Create some Partners
@@ -24,7 +25,8 @@ db.session.add_all([Task(text='Task1'),
 db.session.commit()
 
 ### Create some projects
-db.session.add_all([Project(name='Migrate VMs', opp="0815"),
+db.session.add_all([Project(name='None'),
+                    Project(name='Migrate VMs', opp="0815"),
                     Project(name='Openstack'),
                     Project(name='POC', opp="4711")])
 db.session.commit()
@@ -34,7 +36,7 @@ project1 = Project.query.filter_by(id=1).first()
 customer2 = Customer.query.filter_by(id=2).first()
 task1 = Task.query.filter_by(id=1).first()
 task1.project_id = project1.id
-task1.cusomer_id = customer2.id
+task1.customer_id = customer2.id
 db.session.add(task1)
 db.session.commit()
 
