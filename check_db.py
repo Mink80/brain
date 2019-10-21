@@ -18,3 +18,12 @@ print ("\nCostumers:")
 all_customers = Customer.query.all()
 for c in all_customers:
     print (c)
+
+print ("-----")
+
+all_customers = Customer.query.all()
+choices = []
+for c in all_customers:
+    choices.append({c.id : c.name})
+
+print (choices)

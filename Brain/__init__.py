@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate # pip install Flask-Migrate
+from flask_datepicker import datepicker
 
 app = Flask(__name__)
 
@@ -22,6 +23,9 @@ db = SQLAlchemy(app)
 # flask db migrate -m "commit message"
 # flask db upgrade
 Migrate(app, db)
+
+# See Documentation: https://github.com/mrf345/flask_datepicker/
+datepicker(app)
 
 from Brain.tasks.views import tasks_blueprint
 from Brain.customers.views import customers_blueprint

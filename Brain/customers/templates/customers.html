@@ -5,7 +5,7 @@
       <h5>Customers</h5>
 </div>
 
-<div class="container">
+<div class="container small">
 
 <table class="table table-hover">
   <thead>
@@ -27,8 +27,8 @@
           -
         {% endif %}
         </td>
-      <td>{{c.tasks.count()}}</td>
       <td>{{c.projects.count()}}</td>
+      <td>TODO</td>
     </tr>
     {% endfor %}
   </tbody>

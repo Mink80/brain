@@ -25,26 +25,31 @@ class Task(db.Model):
     duedate = db.Column(db.Date)
     parent = db.Column(db.Integer)
     weekly = db.Column(db.Enum(Weekly))
-    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
+    deleted = db.Column(db.Boolean)
+    deleted_at = db.Column(db.DateTime)
+    #customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
 
     def __init__(self, text, cdate=datetime.datetime.now(), ball=Ball.Any,
-                duedate=datetime.datetime.min, parent=0, weekly=Weekly.No,
-                customer_id=None, project_id=None):
+                duedate=None, parent=0, weekly=Weekly.No, deleted=False,
+                deleted_at=None, customer_id=None, project_id=None):
         self.text = text
         self.cdate = cdate
         self.ball = ball
         self.duedate = duedate
         self.parent = parent
         self.weekly = weekly
+        self.deleted = deleted
+        self.deleted_at = deleted_at
         self.customer_id = customer_id
         self.project_id = project_id
 
     def __repr__(self):
-        return f"TaskID: {self.id}, Text: {self.text}, CDate: {self.cdate}, Ball: {self.ball}, DueDate: {self.duedate}, Parent: {self.parent}, Weekly: {self.weekly}, Customer: {self.customer_id}, Prject: {self.project_id}"
+        return f"TaskID: {self.id}, Text: {self.text}, CDate: {self.cdate}, Ball: {self.ball}, DueDate: {self.duedate}, Parent: {self.parent}, Weekly: {self.weekly}, Project: {self.project_id}"
 
     def customer_name(self):
-        return(Customer.query.get(self.customer_id).name)
+        customer_id = (Project.query.get(self.project_id).customer_id)
+        return(Customer.query.get(customer_id).name)
 
     def project_name(self):
         return(Project.query.get(self.project_id).name)
@@ -54,7 +59,7 @@ class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False, unique=True)
     comment = db.Column(db.Text)
-    tasks = db.relationship('Task', backref='customer', lazy='dynamic')
+    #tasks = db.relationship('Task', backref='customer', lazy='dynamic')
     projects = db.relationship('Project', backref='customer', lazy='dynamic')
 
     def __init__(self, name, comment=""):
@@ -85,7 +90,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     opp = db.Column(db.Integer)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     partner_id = db.Column(db.Integer, db.ForeignKey('partners.id'))
     tasks = db.relationship('Task', backref='project', lazy='dynamic')
 

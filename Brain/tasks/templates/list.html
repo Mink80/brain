@@ -4,61 +4,111 @@
 
 
 <div class="card-body">
-      <h5>Tasks</h5>
+      <h5 class"text-primary">Tasks</h5>
 </div>
 
-<div class="container">
-  <form method="POST">
-    {{ form.hidden_tag() }}
-
+<div class="container small">
     <table class="table table-hover">
       <thead>
         <tr>
           <th scope="col" style="width: 10%">Customer</th>
-          <th scope="col" style="width: 10%">Project</th>
-          <th scope="col" style="width: 50%">Text</th>
-          <th scope="col" style="width: 5%">Ball</th>
+          <th scope="col" style="width: 15%">Project</th>
+          <th scope="col" style="width: 45%">Text</th>
+          <th scope="col" style="width: 10%">Ball</th>
           <th scope="col" style="width: 10%">DueDate</th>
-          <th scope="col" style="width: 5%">Weekly</th>
+          <th scope="col" style="width: 10%">Weekly</th>
         </tr>
       </thead>
       <tbody>
         {% for t in tasks %}
         <tr>
           <td>
-            {% if t.customer_id %}
-              {{ t.customer_name() }}
-            {% else %}
-              -
-            {% endif %}
+            {{ t.customer_name() }}
             </td>
             <td>
-              {% if t.project_id %}
-                {{ t.project_name() }}
-              {% else %}
-                -
-              {% endif %}
-              </td>
+              {{ t.project_name() }}
+            </td>
           <td>{{t.text}}</td>
-          <td>{{t.ball}}</td>
-          <td>{{t.duedate}}
-          <td>{{t.weekly}}</td>
+          <td>{{t.ball.name}}</td>
+          <td>
+            {% if t.duedate %}
+              {{t.duedate}}
+            {% else %}
+              None
+            {% endif %}
+          <td>{{t.weekly.name}}</td>
         </tr>
         {% endfor %}
-
-        <tr>
-          <td>{{ form.customer_select }}</td>
-          <td>project</td>
-          <td>{{ form.text }}</td>
-          <td>{{ form.ball }}</td>
-          <td>{{ form.duedate }}</td>
-          <td>{{ form.weekly }}</td>
-        </tr>
-
       </tbody>
     </table>
 
-    {{ form.submit() }}
+    <br><br>
+    <h6>Add a new task:</h6>
+    <br>
+
+    <!-- Date picker stuff ->>
+    <!-- coole themes: base, flick, redmond -->
+    {{ datepicker.loader(theme="flick") }} {# to load jQuery-ui #}
+    {{ datepicker.picker(id=".dp") }}
+    <!-- --- -->
+
+    <!-- dynamic project selector -->
+    <script charset="utf-8" type="text/javascript">
+
+    $(function() {
+
+        // jQuery selection for the 2 select boxes
+        var dropdown = {
+            customer: $('#select_customer'),
+            project: $('#select_project')
+        };
+
+        // call to update on load
+        updateProjects();
+
+        // function to call XHR and update project dropdown
+        function updateProjects() {
+            var send = {
+                customer: dropdown.customer.val()
+            };
+
+            dropdown.project.attr('disabled', 'disabled');
+            dropdown.project.empty();
+            $.getJSON("{{ url_for('tasks._get_projects') }}", send, function(data) {
+                data.forEach(function(item) {
+                    dropdown.project.append(
+                        $('<option>', {
+                            value: item[0],
+                            text: item[1]
+                        })
+                    );
+                });
+                dropdown.project.removeAttr('disabled');
+            });
+        }
+
+        // event listener to state dropdown change
+        dropdown.customer.on('change', function() {
+            updateProjects();
+        });
+    });
+    </script>
+    <!--- /dynamic project selector -->
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <table>
+        <tr>
+          <td scope="col" style="width: 10%">{{ form.customer(class="form-control form-control-sm") }}</td>
+          <td scope="col" style="width: 15%">{{ form.project(class="form-control form-control-sm") }}</td>
+          <td scope="col" style="width: 45%">{{ form.text(class="form-control form-control-sm") }}</td>
+          <td scope="col" style="width: 10%">{{ form.ball(class="form-control form-control-sm") }}</td>
+          <td scope="col" style="width: 10%">{{ form.duedate(class="form-control form-control-sm dp", size="10") }}</td>
+          <td scope="col" style="width: 10%">{{ form.weekly(class="form-control form-control-sm") }}</td>
+        </tr>
+      </table>
+      <br>
+  {{ form.submit(class="form-control form-control-sm btn btn-primary") }}
   </form>
 </div>
 
