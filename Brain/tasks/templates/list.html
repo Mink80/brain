@@ -30,7 +30,7 @@
             <td>
               {{ t.project_name() }}
             </td>
-          <td>{{t.text}}</td>
+          <td><a class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">{{t.text}}</a></td>
           <td>{{t.ball.name}}</td>
           <td>
             {% if t.duedate %}
