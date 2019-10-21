@@ -39,7 +39,15 @@
               None
             {% endif %}
           <td>{{t.weekly.name}}</td>
-          <td class="text-center"><a href="{{url_for('tasks.delete', task_id=t.id)}}"><img src="{{url_for('static', filename='trash.png')}}" width="12" height="12"></a></td>
+          <td class="text-center">
+            <a href="{{url_for('tasks.edit', task_id=t.id)}}">
+              <img src="{{url_for('static', filename='edit.png')}}" width="14" height="14">
+            </a>
+            &nbsp;
+            <a href="{{url_for('tasks.delete', task_id=t.id)}}">
+              <img src="{{url_for('static', filename='trash.png')}}" width="14" height="14">
+            </a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -50,7 +58,7 @@
       {% if messages %}
         <br>
         {% for category, message in messages %}
-          <div class="flashes {{ category }}">
+          <div class=" {{ category }} text-center">
           {{ message }}
           <button type="button" class="close align-middle" data-dismiss="alert" aria-label="Close" class="fade close">
             <span aria-hidden="true">&times;</span>
@@ -60,6 +68,8 @@
 
       {% endif %}
     {% endwith %}
+
+
 
     <br><br>
     <h6>Add a new task:</h6>
@@ -130,5 +140,7 @@
   {{ form.submit(class="form-control form-control-sm btn btn-outline-primary") }}
   </form>
 </div>
+
+<br>
 
 {% endblock %}

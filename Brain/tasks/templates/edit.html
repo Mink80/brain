@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+
+<div class="card-body">
+      <h5 class"text-primary">Edit Task</h5>
+</div>
+
+<div class="container small">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 10%">Customer</th>
+            <th scope="col" style="width: 15%">Project</th>
+            <th scope="col" style="width: 40%">Text</th>
+            <th scope="col" style="width: 10%">Ball</th>
+            <th scope="col" style="width: 12%">DueDate</th>
+            <th scope="col" style="width: 10%">Weekly</th>
+            <th scope="col" style="width: 3%">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in tasks %}
+            {% if t.id|int == edit_id|int %}
+
+            <tr>
+              <td>{{ form.customer(class="form-control form-control-sm") }}</td>
+              <td>{{ form.project(class="form-control form-control-sm") }}</td>
+              <td>{{ form.text(class="form-control form-control-sm") }}</td>
+              <td>{{ form.ball(class="form-control form-control-sm") }}</td>
+              <td>{{ form.duedate(class="form-control form-control-sm dp", size="10") }}</td>
+              <td>{{ form.weekly(class="form-control form-control-sm") }}</td>
+              <td>{{ form.submit(class="form-control form-control-sm btn btn-outline-primary") }}</td>
+            </tr>
+
+
+            {% else %}
+
+              <tr>
+                <td>
+                  {{ t.customer_name() }}
+                  </td>
+                  <td>
+                    {{ t.project_name() }}
+                  </td>
+                <td>{{t.text}}</td>
+                <td>{{t.ball.name}}</td>
+                <td>
+                  {% if t.duedate %}
+                    {{t.duedate}}
+                  {% else %}
+                    None
+                  {% endif %}
+                <td>{{t.weekly.name}}</td>
+                <td class="text-center">
+                  &nbsp;
+                </td>
+              </tr>
+
+            {% endif %}
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+
+    <!-- Date picker stuff ->>
+    <!-- coole themes: base, flick, redmond -->
+    {{ datepicker.loader(theme="flick") }} {# to load jQuery-ui #}
+    {{ datepicker.picker(id=".dp") }}
+    <!-- --- -->
+
+    <!-- dynamic project selector --->
+    <script charset="utf-8" type="text/javascript">
+
+    $(function() {
+
+        // jQuery selection for the 2 select boxes
+        var dropdown = {
+            customer: $('#select_customer'),
+            project: $('#select_project')
+        };
+
+        // call to update on load
+        updateProjects();
+
+        // function to call XHR and update project dropdown
+        function updateProjects() {
+            var send = {
+                customer: dropdown.customer.val()
+            };
+
+            // save the current selected project
+            current_project = dropdown.project.val()
+
+            dropdown.project.attr('disabled', 'disabled');
+            dropdown.project.empty();
+            $.getJSON("{{ url_for('tasks._get_projects') }}", send, function(data) {
+                data.forEach(function(item) {
+                    dropdown.project.append(
+                        $('<option>', {
+                            value: item[0],
+                            text: item[1]
+                        })
+                    );
+                });
+                dropdown.project.removeAttr('disabled');
+
+                // select the initial selected item if available for the selected customer
+                $("#select_project > option").each(function() {
+                    if (this.value == current_project) {
+                        dropdown.project.val(this.value);
+                    }
+                });
+
+                //let element = document.getElementById("select_project");
+                //element.value = current_project;
+            });
+        }
+
+        // event listener to state dropdown change
+        dropdown.customer.on('change', function() {
+            updateProjects();
+        });
+    });
+    </script>
+    <!--- /dynamic project selector -->
+
+</div>
+
+<br>
+
+{% endblock %}

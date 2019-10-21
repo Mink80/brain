@@ -47,9 +47,11 @@ class Task(db.Model):
     def __repr__(self):
         return f"TaskID: {self.id}, Text: {self.text}, CDate: {self.cdate}, Ball: {self.ball}, DueDate: {self.duedate}, Parent: {self.parent}, Weekly: {self.weekly}, Project: {self.project_id}"
 
+    def customer_id(self):
+        return(Project.query.get(self.project_id).customer_id)
+
     def customer_name(self):
-        customer_id = (Project.query.get(self.project_id).customer_id)
-        return(Customer.query.get(customer_id).name)
+        return(Customer.query.get(self.customer_id()).name)
 
     def project_name(self):
         return(Project.query.get(self.project_id).name)

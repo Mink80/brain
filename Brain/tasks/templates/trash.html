@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+
+<div class="card-body">
+      <h5 class"text-primary">Trashed Tasks</h5>
+</div>
+
+<div class="container small">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 10%">Customer</th>
+          <th scope="col" style="width: 15%">Project</th>
+          <th scope="col" style="width: 40%">Text</th>
+          <th scope="col" style="width: 10%">Ball</th>
+          <th scope="col" style="width: 10%">DueDate</th>
+          <th scope="col" style="width: 10%">Weekly</th>
+          <th scope="col" style="width: 5%">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tasks %}
+        <tr>
+          <td>
+            {{ t.customer_name() }}
+            </td>
+            <td>
+              {{ t.project_name() }}
+            </td>
+          <td>{{t.text}}</td>
+          <td>{{t.ball.name}}</td>
+          <td>
+            {% if t.duedate %}
+              {{t.duedate}}
+            {% else %}
+              None
+            {% endif %}
+          <td>{{t.weekly.name}}</td>
+          <td class="text-center"><a href="{{url_for('tasks.undelete', task_id=t.id)}}"><img src="{{url_for('static', filename='undelete.png')}}" width="12" height="12"></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+<br>
+{% endblock %}
