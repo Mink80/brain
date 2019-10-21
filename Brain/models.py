@@ -3,10 +3,10 @@ from enum import Enum
 import datetime
 
 # Enums
-class Ball(Enum):
-    Any = 0
-    Mine = 1
-    Others = 2
+class Type(Enum):
+    Info = 0
+    Task = 1
+    Request = 2
 
 class Weekly(Enum):
     No = 0
@@ -21,7 +21,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     cdate = db.Column(db.DateTime, nullable=False)
-    ball = db.Column(db.Enum(Ball))
+    type = db.Column(db.Enum(Type))
     duedate = db.Column(db.Date)
     parent = db.Column(db.Integer)
     weekly = db.Column(db.Enum(Weekly))
@@ -30,12 +30,12 @@ class Task(db.Model):
     #customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
 
-    def __init__(self, text, project_id, cdate=datetime.datetime.now(), ball=Ball.Any,
+    def __init__(self, text, project_id, cdate=datetime.datetime.now(), type=Type.Info,
                 duedate=None, parent=0, weekly=Weekly.No, deleted=False,
                 deleted_at=None, customer_id=None):
         self.text = text
         self.cdate = cdate
-        self.ball = ball
+        self.type = type
         self.duedate = duedate
         self.parent = parent
         self.weekly = weekly
@@ -45,7 +45,7 @@ class Task(db.Model):
         self.project_id = project_id
 
     def __repr__(self):
-        return f"TaskID: {self.id}, Text: {self.text}, CDate: {self.cdate}, Ball: {self.ball}, DueDate: {self.duedate}, Parent: {self.parent}, Weekly: {self.weekly}, Project: {self.project_id}"
+        return f"TaskID: {self.id}, Text: {self.text}, CDate: {self.cdate}, Type: {self.type}, DueDate: {self.duedate}, Parent: {self.parent}, Weekly: {self.weekly}, Project: {self.project_id}"
 
     def customer_id(self):
         return(Project.query.get(self.project_id).customer_id)

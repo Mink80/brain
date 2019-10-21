@@ -9,9 +9,9 @@ class TaskForm(FlaskForm):
     text = StringField("TaskName", validators=[DataRequired()])
     #TODO: project (dynamic - depending on customer)
     project = SelectField(u"Project", id='select_project', coerce=int)
-    ball = SelectField(u"Ball", coerce=int)
+    type = SelectField(u"Type", coerce=int)
     duedate = StringField("DueDate", validators=[
         Regexp(regex='^(\d{4}-\d{2}-\d{2})*$', message="Format: YYYY-MM-DD")
     ])
-    weekly = SelectField(u"Ball", coerce=int)
+    weekly = SelectField(u"Weekly", coerce=int)
     submit = SubmitField("Add")

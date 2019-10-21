@@ -15,7 +15,7 @@
           <th scope="col" style="width: 10%">Customer</th>
           <th scope="col" style="width: 15%">Project</th>
           <th scope="col" style="width: 40%">Text</th>
-          <th scope="col" style="width: 10%">Ball</th>
+          <th scope="col" style="width: 10%">Type</th>
           <th scope="col" style="width: 10%">DueDate</th>
           <th scope="col" style="width: 10%">Weekly</th>
           <th scope="col" style="width: 5%">Action</th>
@@ -31,7 +31,7 @@
               {{ t.project_name() }}
             </td>
           <td><a class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">{{t.text}}</a></td>
-          <td>{{t.ball.name}}</td>
+          <td>{{t.type.name}}</td>
           <td>
             {% if t.duedate %}
               {{t.duedate}}
@@ -131,7 +131,7 @@
           <td scope="col" style="width: 10%">{{ form.customer(class="form-control form-control-sm") }}</td>
           <td scope="col" style="width: 15%">{{ form.project(class="form-control form-control-sm") }}</td>
           <td scope="col" style="width: 40%">{{ form.text(class="form-control form-control-sm") }}</td>
-          <td scope="col" style="width: 10%">{{ form.ball(class="form-control form-control-sm") }}</td>
+          <td scope="col" style="width: 10%">{{ form.type(class="form-control form-control-sm") }}</td>
           <td scope="col" style="width: 10%">{{ form.duedate(class="form-control form-control-sm dp", size="10") }}</td>
           <td scope="col" style="width: 15%" colspan="2">{{ form.weekly(class="form-control form-control-sm") }}</td>
         </tr>

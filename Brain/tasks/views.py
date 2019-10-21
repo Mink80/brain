@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash
 from Brain import db
-from Brain.models import Task, Customer, Project, Ball, Weekly
+from Brain.models import Task, Customer, Project, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from datetime import date, datetime
 
@@ -12,7 +12,7 @@ tasks_blueprint = Blueprint('tasks', __name__,
 def index():
     form = TaskForm()
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
-    form.ball.choices = [(b.value, b.name) for b in Ball]
+    form.type.choices = [(t.value, t.name) for t in Type]
     form.weekly.choices = [(w.value, w.name) for w in Weekly]
     form.project.choices = [(p.id, p.name) for p in Project.query.all()]
 
@@ -26,7 +26,7 @@ def index():
 
         new_task = Task(text=form.text.data,
                         project_id=form.project.data,
-                        ball=Ball(form.ball.data),
+                        type=Type(form.type.data),
                         duedate=duedate,
                         weekly=Weekly(form.weekly.data)
                         )
@@ -85,12 +85,12 @@ def edit(task_id):
     form = TaskForm(customer=to_edit.customer_id(),
                     text=to_edit.text,
                     project=to_edit.project_id,
-                    ball=to_edit.ball.value,
+                    type=to_edit.type.value,
                     duedate=to_edit.duedate,
                     weekly=to_edit.weekly.value)
 
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
-    form.ball.choices = [(b.value, b.name) for b in Ball]
+    form.type.choices = [(b.value, b.name) for b in Type]
     form.weekly.choices = [(w.value, w.name) for w in Weekly]
     form.project.choices = [(p.id, p.name) for p in Project.query.all()]
     form.submit.label.text = "Save"
@@ -104,7 +104,7 @@ def edit(task_id):
 
         to_edit.text = form.text.data
         to_edit.project_id = form.project.data
-        to_edit.ball = Ball(form.ball.data)
+        to_edit.type = Type(form.type.data)
         to_edit.duedate = duedate
         to_edit.weekly = Weekly(form.weekly.data)
 

@@ -1,5 +1,5 @@
 from Brain import db
-from Brain.models import Customer, Task, Partner, Project, Ball, Weekly
+from Brain.models import Customer, Task, Partner, Project, Type, Weekly
 
 ### Creates all the tables. Models -> DB Tables
 db.create_all()
