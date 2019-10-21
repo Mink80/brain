@@ -6,12 +6,12 @@ from ..models import Customer
 
 class TaskForm(FlaskForm):
     customer = SelectField(u'Customer', id='select_customer', coerce=int)
-    text = StringField("TaskName", validators=[DataRequired()])
+    text = StringField("TaskName", validators=[Regexp(regex='^.+$', message='Use need to provide a text')])
     #TODO: project (dynamic - depending on customer)
     project = SelectField(u"Project", id='select_project', coerce=int)
     type = SelectField(u"Type", coerce=int)
     duedate = StringField("DueDate", validators=[
-        Regexp(regex='^(\d{4}-\d{2}-\d{2})*$', message="Format: YYYY-MM-DD")
+        Regexp(regex='^(\d{4}-\d{2}-\d{2})*$', message='Use date format: YYYY-MM-DD or leave date field bank')
     ])
     weekly = SelectField(u"Weekly", coerce=int)
     submit = SubmitField("Add")
