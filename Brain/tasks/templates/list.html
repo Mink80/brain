@@ -14,10 +14,11 @@
         <tr>
           <th scope="col" style="width: 10%">Customer</th>
           <th scope="col" style="width: 15%">Project</th>
-          <th scope="col" style="width: 45%">Text</th>
+          <th scope="col" style="width: 40%">Text</th>
           <th scope="col" style="width: 10%">Ball</th>
           <th scope="col" style="width: 10%">DueDate</th>
           <th scope="col" style="width: 10%">Weekly</th>
+          <th scope="col" style="width: 5%">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -38,22 +39,27 @@
               None
             {% endif %}
           <td>{{t.weekly.name}}</td>
+          <td class="text-center"><a href="{{url_for('tasks.delete', task_id=t.id)}}"><img src="{{url_for('static', filename='trash.png')}}" width="12" height="12"></a></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
 
-    {# get_flashed_messages() is auto sent to the template with the flash() call #}
-          {% for mess in get_flashed_messages()  %}
-          <br><br>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            {{mess}}
-            </div>
-          {% endfor %}
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <br>
+        {% for category, message in messages %}
+          <div class="flashes {{ category }}">
+          {{ message }}
+          <button type="button" class="close align-middle" data-dismiss="alert" aria-label="Close" class="fade close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+
+      {% endif %}
+    {% endwith %}
 
     <br><br>
     <h6>Add a new task:</h6>
