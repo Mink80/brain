@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, request, jsonify
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash
 from Brain import db
 from Brain.models import Task, Customer, Project, Ball, Weekly
 from Brain.tasks.forms import TaskForm
+from datetime import date
 
 tasks_blueprint = Blueprint('tasks', __name__,
                             template_folder='templates')
@@ -18,11 +19,21 @@ def index():
     all_tasks = Task.query.all()
 
     if form.validate_on_submit():
-        #session['name'] = form.name.data
-        #session['weekly_relevant'] = form.weekly_relevant.data
-        #session['customer_select'] = form.customer_select.data
-        #session['info'] = form.info.data
-        flash('you clicked submit')
+        if form.duedate.data:
+            duedate = date.fromisoformat(form.duedate.data)
+        else:
+            duedate = None
+
+        new_task = Task(text=form.text.data,
+                        project_id=form.project.data,
+                        ball=Ball(form.ball.data),
+                        duedate=duedate,
+                        weekly=Weekly(form.weekly.data)
+                        )
+        db.session.add(new_task)
+        db.session.commit()
+
+        flash('Task added.')
         return redirect(url_for('tasks.index'))
 
     return render_template('list.html', tasks=all_tasks, form=form)

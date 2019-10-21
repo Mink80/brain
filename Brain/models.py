@@ -30,9 +30,9 @@ class Task(db.Model):
     #customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
 
-    def __init__(self, text, cdate=datetime.datetime.now(), ball=Ball.Any,
+    def __init__(self, text, project_id, cdate=datetime.datetime.now(), ball=Ball.Any,
                 duedate=None, parent=0, weekly=Weekly.No, deleted=False,
-                deleted_at=None, customer_id=None, project_id=None):
+                deleted_at=None, customer_id=None):
         self.text = text
         self.cdate = cdate
         self.ball = ball

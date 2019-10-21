@@ -1,15 +1,17 @@
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Regexp
 from ..models import Customer
 
 
 class TaskForm(FlaskForm):
-    customer = SelectField(u'Customer', id='select_customer')
+    customer = SelectField(u'Customer', id='select_customer', coerce=int)
     text = StringField("TaskName", validators=[DataRequired()])
     #TODO: project (dynamic - depending on customer)
-    project = SelectField(u"Project", id='select_project')
-    ball = SelectField(u"Ball")
-    duedate = StringField("DueDate")
-    weekly = SelectField(u"Ball")
+    project = SelectField(u"Project", id='select_project', coerce=int)
+    ball = SelectField(u"Ball", coerce=int)
+    duedate = StringField("DueDate", validators=[
+        Regexp(regex='^(\d{4}-\d{2}-\d{2})*$', message="Format: YYYY-MM-DD")
+    ])
+    weekly = SelectField(u"Ball", coerce=int)
     submit = SubmitField("Add")
