@@ -9,44 +9,59 @@ tasks_blueprint = Blueprint('tasks', __name__,
                             template_folder='templates')
 
 
-@tasks_blueprint.route('/', methods=['GET','POST'])
-def index(show_info=True, headline="Tasks"):
+def build_form():
     form = TaskForm()
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
     form.type.choices = [(t.value, t.name) for t in Type]
     form.weekly.choices = [(w.value, w.name) for w in Weekly]
     form.project.choices = [(p.id, p.name) for p in Project.query.all()]
+    return(form)
 
-    if show_info == True:
-        tasks = Task.query.filter_by(deleted=False)
+
+def build_task(form):
+    if form.duedate.data:
+        duedate = date.fromisoformat(form.duedate.data)
     else:
-        tasks = Task.query.filter_by(deleted=False). \
-                                filter(not_(Task.type.like(Type.Info)))
+        duedate = None
+
+    return Task(text=form.text.data,
+                project_id=form.project.data,
+                type=Type(form.type.data),
+                duedate=duedate,
+                weekly=Weekly(form.weekly.data))
+
+
+@tasks_blueprint.route('/', methods=['GET','POST'])
+def index():
+    form = build_form()
+
+    tasks = Task.query.filter_by(deleted=False)
 
     if form.validate_on_submit():
-        if form.duedate.data:
-            duedate = date.fromisoformat(form.duedate.data)
-        else:
-            duedate = None
-
-        new_task = Task(text=form.text.data,
-                        project_id=form.project.data,
-                        type=Type(form.type.data),
-                        duedate=duedate,
-                        weekly=Weekly(form.weekly.data)
-                        )
-        db.session.add(new_task)
+        db.session.add(build_task(form))
         db.session.commit()
 
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
 
-    return render_template('list.html', tasks=tasks, form=form, headline=headline)
+    return render_template('list.html', tasks=tasks, form=form, headline="Tasks")
 
 
-@tasks_blueprint.route('/open')
-def open_tasks():
-    return index(show_info=False, headline="Open Tasks")
+@tasks_blueprint.route('/open', methods=['GET','POST'])
+def open():
+    form = build_form()
+
+    tasks = Task.query.filter_by(deleted=False). \
+                                filter(not_(Task.type.like(Type.Info)))
+
+    if form.validate_on_submit():
+        db.session.add(build_task(form))
+        db.session.commit()
+
+        flash('Task added', 'alert alert-success alert-dismissible fade show')
+        return redirect(url_for('tasks.open'))
+
+    return render_template('list.html', tasks=tasks, form=form, headline="Open Tasks")
 
 
 @tasks_blueprint.route('/delete/<task_id>')
