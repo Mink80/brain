@@ -69,10 +69,10 @@ class Task(db.Model):
     def bgcolor(self):
         if (self.type == Type.Request or self.type == Type.Task):
             if self.is_late():
-                return("lightcoral")
+                return("mistyrose")
 
             elif self.is_almost_late():
-                return("mistyrose")
+                return("lemonchiffon")
 
             elif (self.type == Type.Request):
                 return("honeydew")

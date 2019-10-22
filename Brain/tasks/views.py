@@ -3,20 +3,25 @@ from Brain import db
 from Brain.models import Task, Customer, Project, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from datetime import date, datetime
+from sqlalchemy import not_
 
 tasks_blueprint = Blueprint('tasks', __name__,
                             template_folder='templates')
 
 
 @tasks_blueprint.route('/', methods=['GET','POST'])
-def index():
+def index(show_info=True, headline="Tasks"):
     form = TaskForm()
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
     form.type.choices = [(t.value, t.name) for t in Type]
     form.weekly.choices = [(w.value, w.name) for w in Weekly]
     form.project.choices = [(p.id, p.name) for p in Project.query.all()]
 
-    all_tasks = Task.query.filter_by(deleted=False)
+    if show_info == True:
+        tasks = Task.query.filter_by(deleted=False)
+    else:
+        tasks = Task.query.filter_by(deleted=False). \
+                                filter(not_(Task.type.like(Type.Info)))
 
     if form.validate_on_submit():
         if form.duedate.data:
@@ -36,7 +41,12 @@ def index():
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
 
-    return render_template('list.html', tasks=all_tasks, form=form)
+    return render_template('list.html', tasks=tasks, form=form, headline=headline)
+
+
+@tasks_blueprint.route('/open')
+def open_tasks():
+    return index(show_info=False, headline="Open Tasks")
 
 
 @tasks_blueprint.route('/delete/<task_id>')

@@ -12,7 +12,7 @@
     <form method="POST">
       {{ form.hidden_tag() }}
 
-      <table class="table table-hover">
+      <table class="table">
         <thead>
           <tr>
             <th scope="col" style="width: 10%">Customer</th>
@@ -28,7 +28,7 @@
           {% for t in tasks %}
             {% if t.id|int == edit_id|int %}
 
-            <tr>
+            <tr bgcolor="{{t.bgcolor()}}">
               <td>{{ form.customer(class="form-control form-control-sm") }}</td>
               <td>{{ form.project(class="form-control form-control-sm") }}</td>
               <td>{{ form.text(class="form-control form-control-sm") }}</td>
@@ -41,7 +41,7 @@
 
             {% else %}
 
-              <tr>
+              <tr bgcolor="{{t.bgcolor()}}">
                 <td>
                   {{ t.customer_name() }}
                   </td>
