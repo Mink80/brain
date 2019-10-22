@@ -23,7 +23,7 @@
       </thead>
       <tbody>
         {% for t in tasks %}
-        <tr>
+        <tr bgcolor="{{t.bgcolor()}}">
           <td>
             {{ t.customer_name() }}
             </td>

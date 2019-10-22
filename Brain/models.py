@@ -1,6 +1,6 @@
 from Brain import db
 from enum import Enum
-import datetime
+from datetime import date, datetime, timedelta
 
 # Enums
 class Type(Enum):
@@ -30,7 +30,7 @@ class Task(db.Model):
     #customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
 
-    def __init__(self, text, project_id, cdate=datetime.datetime.now(), type=Type.Info,
+    def __init__(self, text, project_id, cdate=datetime.now(), type=Type.Info,
                 duedate=None, parent=0, weekly=Weekly.No, deleted=False,
                 deleted_at=None, customer_id=None):
         self.text = text
@@ -55,6 +55,35 @@ class Task(db.Model):
 
     def project_name(self):
         return(Project.query.get(self.project_id).name)
+
+    def is_late(self):
+        if self.duedate:
+            return(datetime.now().date() > self.duedate)
+        return(False)
+
+    def is_almost_late(self):
+        if self.duedate:
+            return(datetime.now().date() == self.duedate or
+                    (datetime.now().date() + timedelta(days = 1)) == self.duedate)
+
+    def bgcolor(self):
+        if (self.type == Type.Request or self.type == Type.Task):
+            if self.is_late():
+                return("lightcoral")
+
+            elif self.is_almost_late():
+                return("mistyrose")
+
+            elif (self.type == Type.Request):
+                return("honeydew")
+
+            else:
+                # must be a Task
+                return("lightcyan")
+
+        # must be Info or something went wrong
+        return("")
+
 
 class Customer(db.Model):
     __tablename__ = 'customers'
