@@ -44,7 +44,7 @@ def index():
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
 
-    return render_template('list.html', tasks=tasks, form=form, headline="Tasks")
+    return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Tasks")
 
 
 @tasks_blueprint.route('/open', methods=['GET','POST'])
@@ -61,7 +61,7 @@ def open():
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.open'))
 
-    return render_template('list.html', tasks=tasks, form=form, headline="Open Tasks")
+    return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Open Tasks")
 
 
 @tasks_blueprint.route('/delete/<task_id>')
@@ -82,7 +82,7 @@ def delete(task_id):
 @tasks_blueprint.route('/trash')
 def trash():
     trashed_tasks = Task.query.filter_by(deleted=True)
-    return render_template('trash.html', tasks=trashed_tasks)
+    return render_template('/tasks/trash.html', tasks=trashed_tasks)
 
 
 @tasks_blueprint.route('/undelete/<task_id>')
@@ -140,15 +140,7 @@ def edit(task_id):
         return redirect(url_for('tasks.index'))
 
     else:
-        return render_template('edit.html', form=form, tasks=Task.query.filter_by(deleted=False), edit_id=to_edit.id)
-
-
-
-
-
-
-
-
+        return render_template('/tasks/edit.html', form=form, tasks=Task.query.filter_by(deleted=False), edit_id=to_edit.id)
 
 
 @tasks_blueprint.route('/_get_projects')

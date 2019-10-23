@@ -9,4 +9,4 @@ partners_blueprint = Blueprint('partners', __name__,
 @partners_blueprint.route('/', methods=['GET','POST'])
 def index():
     all_partners = Partner.query.all()
-    return render_template("partners.html", partners=all_partners)
+    return render_template("/partners/list.html", partners=all_partners)

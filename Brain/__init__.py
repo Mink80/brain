@@ -30,7 +30,9 @@ datepicker(app)
 from Brain.tasks.views import tasks_blueprint
 from Brain.customers.views import customers_blueprint
 from Brain.partners.views import partners_blueprint
+from Brain.projects.views import projects_blueprint
 
 app.register_blueprint(tasks_blueprint, url_prefix='/tasks')
 app.register_blueprint(customers_blueprint, url_prefix='/customers')
 app.register_blueprint(partners_blueprint, url_prefix="/partners")
+app.register_blueprint(projects_blueprint, url_prefix="/projects")
