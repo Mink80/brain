@@ -2,83 +2,26 @@
 
 {% block content %}
 
-<div class="card-body">
-      <h5 class"text-primary">{{headline}}</h5>
-</div>
+{% include "dynamic_project_selector.html" %}
 
 <div class="w-100 p-5 small mx-auto">
-    <table class="table table-hover-big bg-light">
-      <thead>
-        <tr>
-          <th scope="col" style="width: 10%">Customer</th>
-          <th scope="col" style="width: 15%">Project</th>
-          <th scope="col" style="width: 40%">Text</th>
-          <th scope="col" style="width: 10%">Type</th>
-          <th scope="col" style="width: 10%">DueDate</th>
-          <th scope="col" style="width: 10%">Weekly</th>
-          <th scope="col" style="width: 5%">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for t in tasks %}
-        <tr bgcolor="{{t.bgcolor()}}">
-          <td>
-            {{ t.customer_name() }}
-            </td>
-            <td>
-              {{ t.project_name() }}
-            </td>
-          <td><a class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">{{t.text}}</a></td>
-          <td>{{t.type.name}}</td>
-          <td>
-            {% if t.duedate %}
-              {{t.duedate}}
-            {% else %}
-              None
-            {% endif %}
-          <td>{{t.weekly.name}}</td>
-          <td class="text-center">
-            <a href="{{url_for('tasks.edit', task_id=t.id)}}">
-              <img src="{{url_for('static', filename='edit.png')}}" width="14" height="14">
-            </a>
-            &nbsp;
-            <a href="{{url_for('tasks.delete', task_id=t.id)}}">
-              <img src="{{url_for('static', filename='trash.png')}}" width="14" height="14">
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div>
+    <h5 class"text-primary">{{headline}}</h5>
+  </div>
 
-    <hr>
+  <br>
 
+  {% include "flash_message.html" %}
+  {% include "tasks_table.html" %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <br>
-        {% for category, message in messages %}
-          <div class=" {{ category }} text-center">
-          {{ message }}
-          <button type="button" class="close align-middle" data-dismiss="alert" aria-label="Close" class="fade close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {% endfor %}
+  <hr>
 
-      {% endif %}
-    {% endwith %}
+  <br>
 
-    {% include "dynamic_project_selector.html" %}
-
-    <br>
-
-    {% include "add_task.html" %}
+  {% include "add_task.html" %}
 
 </div>
 
 <br>
-
-
 
 {% endblock %}
