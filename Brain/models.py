@@ -131,5 +131,8 @@ class Project(db.Model):
         self.customer_id = customer_id
         self.partner_id = partner_id
 
+    def customer_name(self):
+        return(Customer.query.get(self.customer_id).name)
+
     def __repr__(self):
         return f"ProjectID: {self.id}, Name: {self.name}, OPP: {self.opp}, Customer: {self.customer_id}, Partner {self.partner_id}"
