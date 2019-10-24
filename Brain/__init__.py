@@ -3,6 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate # pip install Flask-Migrate
 from flask_datepicker import datepicker
+from datetime import date
 
 app = Flask(__name__)
 
@@ -27,6 +28,13 @@ Migrate(app, db)
 # See Documentation: https://github.com/mrf345/flask_datepicker/
 datepicker(app)
 
+# my jinja filters
+def short_date(longdate):
+    return(longdate.strftime("%d.%m.%y"))
+
+app.jinja_env.filters['shortdate'] = short_date
+
+# flask blueprints
 from Brain.tasks.views import tasks_blueprint
 from Brain.customers.views import customers_blueprint
 from Brain.partners.views import partners_blueprint
