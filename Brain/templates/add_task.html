@@ -1,0 +1,31 @@
+<h6>Add a new task:</h6>
+<form method="POST">
+  {{ form.hidden_tag() }}
+  <table class="w-100 p-3">
+    <tr>
+      <td scope="col" style="width: 10%">{{ form.customer(class="form-control form-control-sm") }}</td>
+      <td scope="col" style="width: 15%">{{ form.project(class="form-control form-control-sm") }}</td>
+      <td scope="col" style="width: 40%">{{ form.text(class="form-control form-control-sm") }}</td>
+      <td scope="col" style="width: 10%">{{ form.type(class="form-control form-control-sm") }}</td>
+      <td scope="col" style="width: 10%">{{ form.duedate(class="form-control form-control-sm dp", size="10") }}</td>
+      <td scope="col" style="width: 15%" colspan="2">{{ form.weekly(class="form-control form-control-sm") }}</td>
+    </tr>
+    <tr>
+      <td colspan="6">
+        {% if form.errors %}
+          {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show text-center">
+                      {{ error|escape }}
+                        <button type="button" class="close align-middle" data-dismiss="alert" aria-label="Close" class="fade close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+  {{ form.submit(class="form-control form-control-sm btn btn-outline-primary w-100") }}
+</form>
