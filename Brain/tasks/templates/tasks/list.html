@@ -75,48 +75,7 @@
     {{ datepicker.picker(id=".dp") }}
     <!-- --- -->
 
-    <!-- dynamic project selector -->
-    <script charset="utf-8" type="text/javascript">
-
-    $(function() {
-
-        // jQuery selection for the 2 select boxes
-        var dropdown = {
-            customer: $('#select_customer'),
-            project: $('#select_project')
-        };
-
-        // call to update on load
-        updateProjects();
-
-        // function to call XHR and update project dropdown
-        function updateProjects() {
-            var send = {
-                customer: dropdown.customer.val()
-            };
-
-            dropdown.project.attr('disabled', 'disabled');
-            dropdown.project.empty();
-            $.getJSON("{{ url_for('tasks._get_projects') }}", send, function(data) {
-                data.forEach(function(item) {
-                    dropdown.project.append(
-                        $('<option>', {
-                            value: item[0],
-                            text: item[1]
-                        })
-                    );
-                });
-                dropdown.project.removeAttr('disabled');
-            });
-        }
-
-        // event listener to state dropdown change
-        dropdown.customer.on('change', function() {
-            updateProjects();
-        });
-    });
-    </script>
-    <!--- /dynamic project selector -->
+    {% include "dynamic_project_selector.html" %}   
 
     <br>
     <h6>Add a new task:</h6>
