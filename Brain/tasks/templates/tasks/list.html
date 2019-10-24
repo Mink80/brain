@@ -69,18 +69,12 @@
       {% endif %}
     {% endwith %}
 
-    <!-- Date picker stuff ->>
-    <!-- coole themes: base, flick, redmond -->
-    {{ datepicker.loader(theme="flick") }} {# to load jQuery-ui #}
-    {{ datepicker.picker(id=".dp") }}
-    <!-- --- -->
-
     {% include "dynamic_project_selector.html" %}
 
     <br>
 
     {% include "add_task.html" %}
-    
+
 </div>
 
 <br>
