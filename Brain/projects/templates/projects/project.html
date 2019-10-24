@@ -2,12 +2,20 @@
 
 {% block content %}
 
-<div class="p-3">
-      <h5>Projects</h5>
-</div>
+{% include "dynamic_project_selector.html" %}
 
 <div class="w-100 p-5 small mx-auto">
-  {% include "tasks_table.html" %}
+    <h5>Project {{project.name}}</h5>
+    <h6>{{project.customer_name()}}</h6>
+
+    <br>
+
+    {% include "tasks_table.html" %}
+
+    <br>
+
+    {% include "add_task.html" %}
+
 </div>
 
 {% endblock %}

@@ -1,37 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="card-body">
-      <h5>Partners</h5>
-</div>
+<div class="w-100 p-5 small mx-auto">
+  <h5>Partners</h5>
 
-<div class="container small">
+  <br>
 
-
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col" style="width: 30%">Name</th>
-      <th scope="col" style="width: 60%">Comment</th>
-      <th scope="col" style="width: 10%"">Projects</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for p in partners %}
-    <tr>
-      <td>{{p.name}}</td>
-      <td>
-        {% if p.comment != "" %}
-          {{p.comment}}
-        {% else %}
-          -
-        {% endif %}
-        </td>
-      <td>{{p.projects.count()}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col" style="width: 30%">Name</th>
+        <th scope="col" style="width: 60%">Comment</th>
+        <th scope="col" style="width: 10%"">Projects</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in partners %}
+      <tr>
+        <td>{{p.name}}</td>
+        <td>
+          {% if p.comment != "" %}
+            {{p.comment}}
+          {% else %}
+            -
+          {% endif %}
+          </td>
+        <td>{{p.projects.count()}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 </div>
 
