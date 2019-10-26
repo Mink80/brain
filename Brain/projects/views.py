@@ -22,7 +22,9 @@ def index():
 @projects_blueprint.route('/<project_id>', methods=['GET','POST'])
 def project(project_id):
 
-    tasks = Task.query.filter_by(project_id=project_id)
+    tasks = Task.query.filter_by(project_id=project_id). \
+                        filter_by(deleted=False)
+
     project = Project.query.get(project_id)
 
     form = TaskForm(customer=project.customer_id,
