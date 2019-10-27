@@ -1,3 +1,8 @@
+    {% if edit_id %}
+      <form method="POST">
+      {{ form.hidden_tag() }}
+    {% endif %}
+
     <table class="table table-hover-big border-primary bg-light">
       <thead class="thead-light">
         <tr class="">
@@ -12,6 +17,18 @@
       </thead>
       <tbody>
         {% for t in tasks %}
+        {% if edit_id and t.id|int == edit_id|int %}
+
+        <tr bgcolor="{{t.bgcolor()}}">
+          <td>{{ form.customer(class="form-control form-control-sm") }}</td>
+          <td>{{ form.project(class="form-control form-control-sm") }}</td>
+          <td>{{ form.text(class="form-control form-control-sm") }}</td>
+          <td>{{ form.type(class="form-control form-control-sm") }}</td>
+          <td>{{ form.duedate(class="form-control form-control-sm dp", size="10") }}</td>
+          <td>{{ form.weekly(class="form-control form-control-sm") }}</td>
+          <td>{{ form.submit(class="form-control form-control-sm btn btn-outline-primary") }}</td>
+        </tr>
+        {% else %}
         <tr bgcolor="{{t.bgcolor()}}">
           <td>
             {{ t.customer_name() }}
@@ -38,6 +55,7 @@
             </a>
           </td>
         </tr>
+        {% endif %}
         {% endfor %}
       </tbody>
     </table>

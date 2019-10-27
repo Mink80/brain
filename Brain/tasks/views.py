@@ -4,10 +4,10 @@ from Brain.models import Task, Customer, Project, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from datetime import date, datetime
 from sqlalchemy import not_
+import re
 
 tasks_blueprint = Blueprint('tasks', __name__,
                             template_folder='templates')
-
 
 def build_form():
     form = TaskForm()
@@ -100,26 +100,31 @@ def undelete(task_id):
     return redirect(url_for('tasks.index'))
 
 
-@tasks_blueprint.route('/edit/<task_id>', methods=['GET','POST'])
+@tasks_blueprint.route('/edit/<task_id>/', methods=['GET','POST'])
 def edit(task_id):
+    # get the task object for editing from the db
     to_edit = Task.query.get(task_id)
+
+    # if no task was found, flash an error and redirect to the tasks list
     if not to_edit:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
 
+    # build the form and use the task values as the forms default values
     form = TaskForm(customer=to_edit.customer_id(),
                     text=to_edit.text,
                     project=to_edit.project_id,
                     type=to_edit.type.value,
                     duedate=to_edit.duedate,
-                    weekly=to_edit.weekly.value)
+                    weekly=to_edit.weekly.value,
+                    referrer=request.referrer)
 
+    # and add the valid options for the form
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
     form.type.choices = [(b.value, b.name) for b in Type]
     form.weekly.choices = [(w.value, w.name) for w in Weekly]
     form.project.choices = [(p.id, p.name) for p in Project.query.all()]
     form.submit.label.text = "Save"
-
 
     if form.validate_on_submit():
         if form.duedate.data:
@@ -136,11 +141,44 @@ def edit(task_id):
         db.session.add(to_edit)
         db.session.commit()
 
-        flash('Task edited', 'alert alert-success alert-dismissible fade show')
-        return redirect(url_for('tasks.index'))
+        flash('Task saved', 'alert alert-success alert-dismissible fade show')
+        return redirect(form.referrer.data)
 
     else:
-        return render_template('/tasks/edit.html', form=form, tasks=Task.query.filter_by(deleted=False), edit_id=to_edit.id)
+
+        # lets get the referrer
+        ref = request.referrer
+
+        # and prepare an empty tasks object
+        tasks = None
+
+        # next, we match the referer against valid options and build the task query accordingly
+        # Valid options for referrer:
+        # tasks         : http://<HOST_or_IP>/tasks/
+        # open tasks    : http://<HOST_or_IP>/tasks/open
+        # project       : http://<HOST_or_IP>/projects/<project_id>
+
+        if re.search("^https?://(.+)/tasks/$", ref):
+            tasks = Task.query.filter_by(deleted=False)
+
+        elif re.search("^https?://(.+)/tasks/open$", ref):
+            tasks = Task.query.filter_by(deleted=False). \
+                                filter(not_(Task.type.like(Type.Info)))
+
+        else:
+            match = re.search("^https?://(.+)/projects/(\d+)$", ref)
+            if match:
+                tasks = Task.query.filter_by(project_id=match.group(2)). \
+                                    filter_by(deleted=False)
+
+        # if tasks is still None, no regex matched, something was wrong with the referrer.
+        if not tasks:
+            return render_template('400.html'), 400
+
+        return render_template('/tasks/edit.html', form=form,
+                                                    tasks=tasks,
+                                                    edit_id=to_edit.id,
+                                                    headline="Edit Task")
 
 
 @tasks_blueprint.route('/_get_projects')
