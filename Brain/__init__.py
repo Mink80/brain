@@ -1,11 +1,17 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate # pip install Flask-Migrate
+from flask_migrate import Migrate
 from flask_datepicker import datepicker
 from datetime import date
+import logging
+from cryptography.fernet import Fernet
 
 app = Flask(__name__)
+
+# logging DEBUG
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.DEBUG)
 
 # Forms config
 app.config['SECRET_KEY'] = 'foobar'
@@ -33,6 +39,10 @@ def short_date(longdate):
     return(longdate.strftime("%d.%m.%y"))
 
 app.jinja_env.filters['shortdate'] = short_date
+
+# cryptography key generation
+key = Fernet.generate_key()
+crypter = Fernet(key)
 
 # flask blueprints
 from Brain.tasks.views import tasks_blueprint

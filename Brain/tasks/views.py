@@ -5,6 +5,8 @@ from Brain.tasks.forms import TaskForm
 from datetime import date, datetime
 from sqlalchemy import not_
 import re
+from cryptography.fernet import Fernet
+from Brain import crypter
 
 tasks_blueprint = Blueprint('tasks', __name__,
                             template_folder='templates')
@@ -107,8 +109,12 @@ def edit(task_id):
 
     # if no task was found, flash an error and redirect to the tasks list
     if not to_edit:
-        flash('No such task', 'alert alert-danger alert-dismissible fade show')
+        flash('Editing request failed: No such task', 'alert alert-danger alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
+
+    # for security reasons, lets encrypt the referer that we will add as
+    # hidden field into the form. prevents client side manipulation attempts.
+    crypted_referrer = crypter.encrypt(request.referrer.encode())
 
     # build the form and use the task values as the forms default values
     form = TaskForm(customer=to_edit.customer_id(),
@@ -117,7 +123,7 @@ def edit(task_id):
                     type=to_edit.type.value,
                     duedate=to_edit.duedate,
                     weekly=to_edit.weekly.value,
-                    referrer=request.referrer)
+                    referrer=crypted_referrer.decode())
 
     # and add the valid options for the form
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
@@ -142,7 +148,7 @@ def edit(task_id):
         db.session.commit()
 
         flash('Task saved', 'alert alert-success alert-dismissible fade show')
-        return redirect(form.referrer.data)
+        return redirect(crypter.decrypt(form.referrer.data.encode()).decode())
 
     else:
 
@@ -152,7 +158,7 @@ def edit(task_id):
         # and prepare an empty tasks object
         tasks = None
 
-        # next, we match the referer against valid options and build the task query accordingly
+        # next, we match the referer against valid options and build the tasks query accordingly
         # Valid options for referrer:
         # tasks         : http://<HOST_or_IP>/tasks/
         # open tasks    : http://<HOST_or_IP>/tasks/open
