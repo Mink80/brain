@@ -39,7 +39,11 @@
             None
           {% endif %}
         <td>{{t.weekly.name}}</td>
-        <td class="text-center"><a href="{{url_for('tasks.undelete', task_id=t.id)}}"><img src="{{url_for('static', filename='undelete.png')}}" width="12" height="12"></a></td>
+        <td class="text-center">
+          <a href="{{url_for('tasks.undelete', task_id=t.id)}}">
+            <img src="{{url_for('static', filename='undelete.png')}}" width="16" height="16">
+          </a>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
