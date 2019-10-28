@@ -1,12 +1,11 @@
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.validators import DataRequired, Regexp
-from ..models import Customer
-
+from wtforms.validators import Regexp
 
 class TaskForm(FlaskForm):
     customer = SelectField(u'Customer', id='select_customer', coerce=int)
-    text = StringField("TaskName", validators=[Regexp(regex='^.+$', message='Use need to provide a text')])
+    text = StringField("TaskName", validators=[Regexp(regex='^.+$', message='You need to provide a text')],
+                                    render_kw={"placeholder": "Task Description"})
     project = SelectField(u"Project", id='select_project', coerce=int)
     type = SelectField(u"Type", coerce=int)
     duedate = StringField("DueDate", validators=[
