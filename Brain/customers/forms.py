@@ -4,7 +4,8 @@ from wtforms.validators import DataRequired
 from Brain.models import Customer
 
 class CustomerForm(FlaskForm):
-    name = StringField("Name", validators=[DataRequired()], render_kw={"placeholder": "Customer Name"})
+    name = StringField("Name", validators=[DataRequired()],
+                                render_kw={"placeholder": "Customer Name"})
 
     def validate_name(form, field):
         if (Customer.query.filter_by(name=field.data).first()):
