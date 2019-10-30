@@ -7,12 +7,12 @@
       <thead class="thead-light">
         <tr class="">
           <th scope="col" style="width: 10%">Customer</th>
-          <th scope="col" style="width: 13%">Project</th>
-          <th scope="col" style="width: 38%">Text</th>
+          <th scope="col" style="width: 15%">Project</th>
+          <th scope="col" style="width: 35%">Text</th>
           <th scope="col" style="width: 10%">Type</th>
-          <th scope="col" style="width: 14%">DueDate</th>
+          <th scope="col" style="width: 10%">DueDate</th>
           <th scope="col" style="width: 10%">Weekly</th>
-          <th scope="col" style="width: 5%">Action</th>
+          <th scope="col" style="width: 10%" class="text-center">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -22,9 +22,9 @@
         <tr bgcolor="{{t.bgcolor()}}">
           <td>{{ form.customer(class="form-control form-control-sm") }}</td>
           <td>{{ form.project(class="form-control form-control-sm") }}</td>
-          <td>{{ form.text(class="form-control form-control-sm") }}</td>
+          <td>{{ form.text(class="form-control form-control-sm", autocomplete="off") }}</td>
           <td>{{ form.type(class="form-control form-control-sm") }}</td>
-          <td>{{ form.duedate(class="form-control form-control-sm dp", size="10") }}</td>
+          <td>{{ form.duedate(class="form-control form-control-sm dp", size="10", autocomplete="off") }}</td>
           <td>{{ form.weekly(class="form-control form-control-sm") }}</td>
           <td>{{ form.submit(class="form-control form-control-sm btn btn-outline-primary") }}</td>
         </tr>
