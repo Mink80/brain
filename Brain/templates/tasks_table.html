@@ -31,12 +31,20 @@
         {% else %}
         <tr bgcolor="{{t.bgcolor()}}">
           <td>
-            {{ t.customer_name() }}
+            <a href="{{url_for('customers.customer', customer_id=t.customer_id())}}" class="text-dark">
+              {{ t.customer_name() }}
+            </a>
             </td>
             <td>
-              {{ t.project_name() }}
+              <a class="text-dark" href="{{url_for('projects.project', project_id=t.project_id)}}">
+                {{ t.project_name() }}
+              </a>
             </td>
-          <td><a class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">{{t.text}}</a></td>
+          <td>
+            <a class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">
+              {{t.text}}
+            </a>
+          </td>
           <td>{{t.type.name}}</td>
           <td>
             {% if t.duedate %}

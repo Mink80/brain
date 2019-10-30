@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="w-100 p-5 small mx-auto">
+  <h5> {{ customer.name }} </h5>
+
+  <br>
+  <div class="w-75 mx-auto">
+    {% include "projects_table.html" %}
+  </div>
+  
+</div>
+
+<!-- TODO: add project form -->
+
+{% endblock %}

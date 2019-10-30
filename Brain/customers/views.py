@@ -34,6 +34,20 @@ def index():
     return render_template("customers/list.html", customers=all_customers, form=form)
 
 
+@customers_blueprint.route('/customer/<customer_id>')
+def customer(customer_id):
+    customer=Customer.query.get(customer_id)
+    # we need to use a dict as projects here because the project_table template expects this form
+    projects = {}
+    projects[customer] = Project.query.filter_by(customer_id=customer_id).all()
+
+    print(projects)
+
+    return render_template('customers/customer.html',
+                            projects=projects,
+                            customer=customer)
+
+
 def execute_deletion(customer):
     # validate customer
     if customer:
@@ -98,7 +112,7 @@ def delete(customer_id):
 
     if (len(projects) > 1 or len(tasks) > 0):
         return render_template("/customers/confirm_delete.html", projects=projects,
-                                                                to_delete=to_delete,
+                                                                customer=to_delete,
                                                                 deleted_tasks=deleted_tasks,
                                                                 confirm_delete=confirm_delete,
                                                                 cancel_delete=cancel_delete )
