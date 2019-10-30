@@ -23,7 +23,7 @@ def index():
 def project(project_id):
 
     tasks = Task.query.filter_by(project_id=project_id). \
-                        filter_by(deleted=False)
+                        filter_by(deleted=False).all()
 
     project = Project.query.get(project_id)
 
