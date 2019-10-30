@@ -1,0 +1,28 @@
+<table class="table table-borderless table-hover w-100 mx-auto">
+  <thead class="thead-light">
+    <tr class="border">
+      <th scope="col" style="width: 30%">Customer</th>
+      <th scope="col" style="width: 49%">Project</th>
+      <th scope="col" style="width: 7%"">Infos</th>
+      <th scope="col" style="width: 7%"">Tasks</th>
+      <th scope="col" style="width: 7%"">Requests</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for c, ps in projects.items() %}
+    <tr>
+      <td colspan="5" class="border-top bg-light"><h6>{{c.name}}</h6></td>
+    </tr>
+    {% for p in ps %}
+      <tr class="text-left">
+        <td>&nbsp;</td>
+        <td><a class="text-dark" href="{{url_for('projects.project', project_id=p.id)}}">{{p.name}}</a></td>
+        <td>{{ p.infos()| length }}</td>
+        <td>{{ p.open_tasks()| length }}</td>
+        <td>{{ p.requests()| length }}</td>
+      </tr>
+    {% endfor %}
+  {% endfor %}
+  </tbody>
+</table>
+<hr>

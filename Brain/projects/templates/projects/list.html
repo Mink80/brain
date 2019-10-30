@@ -6,34 +6,10 @@
   <h5>Projects</h5>
 
   <br>
-<div class="w-50 mx-auto">
-  <table class="table table-borderless table-hover w-100 mx-auto">
-    <thead class="thead-light">
-      <tr class="border">
-        <th scope="col" style="width: 40%">Customer</th>
-        <th scope="col" style="width: 50%">Project</th>
-        <th scope="col" style="width: 10%"">Tasks</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for c, ps in projects.items() %}
-      <tr>
-        <td colspan="3" class="text-primary border-top ">{{c.name}}</td>
-      </tr>
-      {% for p in ps %}
-        <tr>
-          <td>&nbsp;</td>
-          <td><a class="text-dark" href="{{url_for('projects.project', project_id=p.id)}}">{{p.name}}</a></td>
-          <td>#tasks</td>
-        </tr>
-      {% endfor %}
-    {% endfor %}
-    <tr class="border-top">
-      <td colspan="3"></td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+
+  <div class="w-75 mx-auto">
+    {% include "projects_table.html" %}
+  </div>
 </div>
 
 {% endblock %}
