@@ -3,20 +3,32 @@ from Brain import db
 from Brain.models import Task, Customer, Project, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from Brain.tasks.views import build_task
+from Brain.projects.forms import ProjectForm
 
 projects_blueprint = Blueprint('projects', __name__,
                                 template_folder='templates')
 
 
-@projects_blueprint.route('/')
+@projects_blueprint.route('/', methods=['GET','POST'])
 def index():
+    form = ProjectForm()
+    form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
+
+    if form.validate_on_submit():
+        db.session.add(Project(name=form.name.data,
+                                customer_id=form.customer.data))
+        db.session.commit()
+
+        return redirect(url_for('projects.index'))
+
     all_customers = Customer.query.all()
 
     projects = {}
     for c in all_customers:
         projects[c] = Project.query.filter_by(customer_id=c.id).all()
 
-    return render_template('/projects/list.html', projects=projects)
+    return render_template('/projects/list.html', projects=projects,
+                                                    form=form)
 
 
 @projects_blueprint.route('/<project_id>', methods=['GET','POST'])
@@ -42,4 +54,6 @@ def project(project_id):
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('projects.project', project_id=project_id))
 
-    return render_template('/projects/project.html', tasks=tasks, form=form, project=project)
+    return render_template('/projects/project.html', tasks=tasks,
+                                                        form=form,
+                                                        project=project)
