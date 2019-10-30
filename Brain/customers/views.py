@@ -14,10 +14,6 @@ def index():
     all_customers = Customer.query.all()
 
     if form.validate_on_submit():
-        if (Customer.query.filter_by(name=form.name.data).first()):
-            flash('A customer with that name already exists.', 'alert alert-danger alert-dismissible fade show')
-            return redirect((url_for('customers.index')))
-
         # Create customer
         customer = Customer(name=form.name.data, comment=form.comment.data)
         db.session.add(customer)
