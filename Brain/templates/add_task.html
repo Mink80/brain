@@ -7,13 +7,13 @@
 <h6>Add a new task:</h6>
 <form method="POST">
   {{ form.hidden_tag() }}
-  <table class="w-100 p-3">
+  <table class="w-100">
     <tr>
       <td scope="col" style="width: 10%">{{ form.customer(class="form-control form-control-sm") }}</td>
       <td scope="col" style="width: 15%">{{ form.project(class="form-control form-control-sm") }}</td>
-      <td scope="col" style="width: 40%">{{ form.text(class="form-control form-control-sm") }}</td>
+      <td scope="col" style="width: 40%">{{ form.text(class="form-control form-control-sm", autocomplete="off") }}</td>
       <td scope="col" style="width: 10%">{{ form.type(class="form-control form-control-sm") }}</td>
-      <td scope="col" style="width: 10%">{{ form.duedate(class="form-control form-control-sm dp", size="10") }}</td>
+      <td scope="col" style="width: 10%">{{ form.duedate(class="form-control form-control-sm dp", size="10", autocomplete="off") }}</td>
       <td scope="col" style="width: 15%" colspan="2">{{ form.weekly(class="form-control form-control-sm") }}</td>
     </tr>
     <tr>
