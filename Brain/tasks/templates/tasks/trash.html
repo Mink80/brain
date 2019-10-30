@@ -9,6 +9,8 @@
 
   <br>
 
+  {% include "flash_message.html" %}
+
   <table class="table table-hover-big">
     <thead class="thead-light">
       <tr>
@@ -44,7 +46,7 @@
             <img src="{{url_for('static', filename='undelete.png')}}" width="16" height="16">
           </a>
           &nbsp;
-          <a href="#">
+          <a href="{{url_for('tasks.shredd', task_id=t.id)}}">
             <img src="{{url_for('static', filename='shredd.png')}}" width="16" height="16">
           </a>
         </td>

@@ -87,6 +87,22 @@ def trash():
     return render_template('/tasks/trash.html', tasks=trashed_tasks)
 
 
+def delete_from_db(task_id):
+    task_to_shredd = Task.query.get(task_id)
+    if task_to_shredd:
+        db.session.delete(task_to_shredd)
+        db.session.commit()
+        return(True)
+    return(False)
+
+
+@tasks_blueprint.route('/shredd/<task_id>')
+def shredd(task_id):
+    if delete_from_db(task_id):
+        flash('Task shredded', 'alert alert-warning alert-dismissible fade show')
+    return(redirect(url_for('tasks.trash')))
+
+
 @tasks_blueprint.route('/undelete/<task_id>')
 def undelete(task_id):
     to_delete = Task.query.get(task_id)
