@@ -134,5 +134,17 @@ class Project(db.Model):
     def customer_name(self):
         return(Customer.query.get(self.customer_id).name)
 
+    def infos(self):
+        return(self.tasks.filter_by(type=Type.Info).filter_by(deleted=False).all())
+
+    def open_tasks(self):
+        return(self.tasks.filter_by(type=Type.Task).filter_by(deleted=False).all())
+
+    def requests(self):
+        return(self.tasks.filter_by(type=Type.Request).filter_by(deleted=False).all())
+
+    def deleted_tasks(self):
+        return(self.tasks.filter_by(deleted=True).all())
+
     def __repr__(self):
         return f"ProjectID: {self.id}, Name: {self.name}, OPP: {self.opp}, Customer: {self.customer_id}, Partner {self.partner_id}"

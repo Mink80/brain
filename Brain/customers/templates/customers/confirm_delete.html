@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="w-100 p-5 small mx-auto">
+  <h5>Confirm deletion of customer {{ to_delete.name }} </h5>
+
+  <br>
+
+  {% include "projects_table.html" %}
+  There are also {{ deleted_tasks }} deleted tasks in the trash that will be shredded.
+  <br><br>
+
+  <p class="font-weight-bold font-weight-normal">
+    Are you sure you want to permanently delete customer {{ to_delete.name }} with all projects and tasks?
+    <br>
+    This can not be undone!
+    <br><br>
+  </p>
+
+  <div class="row">
+    <form method="POST">
+      {{ confirm_delete.hidden_tag() }}
+      {{ confirm_delete.confirm(class="form-control-sm btn btn-outline-danger") }}
+    </form>
+
+    &nbsp;&nbsp;
+
+    <form method="POST">
+      {{ cancel_delete.hidden_tag() }}
+      {{ cancel_delete.cancel(class="form-control-sm btn btn-outline-primary") }}
+    </form>
+  </div>
+
+</div>
+    <!-- TODO: Modal double check -->
+
+{% endblock %}
