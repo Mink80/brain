@@ -8,10 +8,13 @@ class CustomerForm(FlaskForm):
                                 render_kw={"placeholder": "Customer Name"})
 
     def validate_name(form, field):
-        if (Customer.query.filter_by(name=field.data).first()):
+        c = Customer.query.filter_by(name=field.data).first()
+        if c and (not int(c.id) == int(form.edit_id.data)):
             raise ValidationError('A customer with that name already exists')
 
     comment = StringField("Comment", render_kw={"placeholder": "Comment (optional)"})
+    # this is used by the validator above to check if we are in an editing process
+    edit_id = HiddenField()
     submit = SubmitField("Add")
 
 

@@ -44,6 +44,36 @@ def customer(customer_id):
                             customer=customer)
 
 
+@customers_blueprint.route('/edit/<customer_id>', methods=['GET', 'POST'])
+def edit(customer_id):
+    customer_to_edit = Customer.query.get(customer_id)
+    if not customer_to_edit:
+        flash('Editing customer failed: No such customer', 'alert alert-danger alert-dismissible fade show')
+        return redirect(url_for('customers.index'))
+
+    form = CustomerForm(name=customer_to_edit.name,
+                        comment=customer_to_edit.comment,
+                        edit_id=customer_to_edit.id)
+
+    form.submit.label.text = "Save"
+
+    if form.validate_on_submit():
+        customer_to_edit.name = form.name.data
+        customer_to_edit.comment = form.comment.data
+
+        db.session.add(customer_to_edit)
+        db.session.commit()
+
+        flash('Task saved', 'alert alert-success alert-dismissible fade show')
+        return redirect(url_for('customers.index'))
+
+    else:
+        customers = Customer.query.all()
+        return render_template('/customers/edit.html', form=form,
+                                                        edit_id=customer_to_edit.id,
+                                                        customers=customers)
+
+
 def execute_deletion(customer):
     # validate customer
     if customer:

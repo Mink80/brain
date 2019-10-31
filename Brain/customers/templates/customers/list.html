@@ -10,37 +10,7 @@
 
     {% include "flash_message.html" %}
 
-    <table class="table table-hover">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col" style="width: 30%">Name</th>
-          <th scope="col" style="width: 60%">Comment</th>
-          <th scope="col" style="width: 5%">Projects</th>
-          <th scope="col" style="width: 5%">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for c in customers %}
-        <tr>
-          <td>{{c.name}}</td>
-          <td>
-            {% if c.comment != "" %}
-              {{c.comment}}
-            {% else %}
-              -
-            {% endif %}
-            </td>
-          <td>{{c.projects.count()}}</td>
-          <td class="text-center">
-            <a href="{{url_for('customers.delete', customer_id=c.id)}}">
-              <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <hr>
+    {% include "customer_table.html" %}
 
     <h6>Add a new Customer:</h6>
     <form method="POST">

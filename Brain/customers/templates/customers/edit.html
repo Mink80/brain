@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="w-100 p-5 small mx-auto">
+  <h5>Edit customer</h5>
+
+  <br>
+
+  <div class="w-75 mx-auto">
+
+    {% include "flash_message.html" %}
+
+    {% include "customer_table.html" %}
+
+    {% include "flash_error_message.html" %}
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% if edit_id %}
+  <form method="POST">
+  {{ form.hidden_tag() }}
+{% endif %}
+
+<table class="table table-hover">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col" style="width: 30%">Name</th>
+      <th scope="col" style="width: 60%">Comment</th>
+      <th scope="col" style="width: 5%">Projects</th>
+      <th scope="col" style="width: 5% class="text-center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in customers %}
+      {% if edit_id and c.id|int == edit_id|int %}
+        <tr>
+          <td>{{ form.name(class="form-control form-control-sm") }}</td>
+          <td>{{ form.comment(class="form-control form-control-sm", autocomplete="off") }}</td>
+          <td colspan="2">{{ form.submit(class="form-control form-control-sm btn btn-outline-primary") }}</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td>{{c.name}}</td>
+          <td>
+            {% if c.comment != "" %}
+              <a class="text-dark" href="{{url_for('customers.edit', customer_id=c.id)}}">
+                {{c.comment}}
+              </a>
+            {% else %}
+              -
+            {% endif %}
+            </td>
+          <td class="text-center">
+            {{c.projects.count()}}
+          </td>
+          <td class="text-center">
+            <a href="{{url_for('customers.edit', customer_id=c.id)}}">
+              <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+            </a>
+            &nbsp;
+            <a href="{{url_for('customers.delete', customer_id=c.id)}}">
+              <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
+            </a>
+          </td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if edit_id %}
+  </form">
+{% endif %}
+
+<hr>
