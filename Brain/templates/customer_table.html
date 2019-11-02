@@ -29,7 +29,9 @@
                 {{c.comment}}
               </a>
             {% else %}
-              -
+              <a class="text-dark" href="{{url_for('customers.edit', customer_id=c.id)}}">
+                -
+              </a>
             {% endif %}
             </td>
           <td class="text-center">
