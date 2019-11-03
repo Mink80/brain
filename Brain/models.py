@@ -121,11 +121,12 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     opp = db.Column(db.Integer)
+    notes = db.Column(db.Text)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     partner_id = db.Column(db.Integer, db.ForeignKey('partners.id'))
     tasks = db.relationship('Task', backref='project', lazy='dynamic')
 
-    def __init__(self, name, opp=0, customer_id=None, partner_id=None):
+    def __init__(self, name, opp=None, customer_id=None, partner_id=None):
         self.name = name
         self.opp = opp
         self.customer_id = customer_id
@@ -133,6 +134,9 @@ class Project(db.Model):
 
     def customer_name(self):
         return(Customer.query.get(self.customer_id).name)
+
+    def partner_name(self):
+        return(Partner.query.get(self.partner_id).name)
 
     def infos(self):
         return(self.tasks.filter_by(type=Type.Info).filter_by(deleted=False).all())

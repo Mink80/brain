@@ -14,3 +14,10 @@ class ProjectForm(FlaskForm):
             raise ValidationError('A project with that name already exists for this customer')
 
     submit = SubmitField("Add")
+
+
+class ProjectInfoForm(FlaskForm):
+    opp_number = TextField('Opportunity', render_kw={"placeholder": "Opp number"})
+    partner = SelectField(u'Partner', coerce=int, )
+    notes = TextAreaField()
+    submit_project_info = SubmitField("Save")

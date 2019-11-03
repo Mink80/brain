@@ -16,7 +16,11 @@
     {% for p in ps %}
       <tr class="text-left">
         <td>&nbsp;</td>
-        <td><a class="text-dark" href="{{url_for('projects.project', project_id=p.id)}}">{{p.name}}</a></td>
+        <td>
+          <a class="text-dark" title="Click to open project" href="{{url_for('projects.project', project_id=p.id)}}">
+            {{p.name}}
+          </a>
+        </td>
         <td>{{ p.infos()| length }}</td>
         <td>{{ p.open_tasks()| length }}</td>
         <td>{{ p.requests()| length }}</td>
