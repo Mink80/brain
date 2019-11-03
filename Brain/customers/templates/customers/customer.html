@@ -4,13 +4,15 @@
 <div class="w-100 p-5 small mx-auto">
   <h5> {{ customer.name }} </h5>
 
+  {% include "flash_message.html" %}
+  {% include "flash_error_message.html" %}
+
   <br>
   <div class="w-75 mx-auto">
     {% include "projects_table.html" %}
+    {% include "add_project.html" %}
   </div>
-  
-</div>
 
-<!-- TODO: add project form -->
+</div>
 
 {% endblock %}

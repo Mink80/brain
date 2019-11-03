@@ -22,14 +22,18 @@
         </tr>
       {% else %}
         <tr>
-          <td>{{c.name}}</td>
+          <td>
+            <a class="text-dark" title="Click to open customer details" href="{{url_for('customers.customer', customer_id=c.id)}}">
+              {{c.name}}
+            </a>
+          </td>
           <td>
             {% if c.comment != "" %}
-              <a class="text-dark" href="{{url_for('customers.edit', customer_id=c.id)}}">
+              <a class="text-dark" title="Click to edit" href="{{url_for('customers.edit', customer_id=c.id)}}">
                 {{c.comment}}
               </a>
             {% else %}
-              <a class="text-dark" href="{{url_for('customers.edit', customer_id=c.id)}}">
+              <a class="text-dark" title="Click to Edit" href="{{url_for('customers.edit', customer_id=c.id)}}">
                 -
               </a>
             {% endif %}

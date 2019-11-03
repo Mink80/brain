@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash
 from Brain import db
 from Brain.models import Customer, Project, Task
 from Brain.customers.forms import CustomerForm, ConfirmDelete, CancelDelete
+from Brain.projects.forms import ProjectForm
 
 
 customers_blueprint = Blueprint('customers', __name__,
@@ -30,18 +31,28 @@ def index():
     return render_template("customers/list.html", customers=all_customers, form=form)
 
 
-@customers_blueprint.route('/customer/<customer_id>')
+@customers_blueprint.route('/customer/<customer_id>', methods=['GET', 'POST'])
 def customer(customer_id):
+    form = ProjectForm()
+    form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
+
+    if form.validate_on_submit():
+        db.session.add(Project(name=form.name.data,
+                                customer_id=form.customer.data))
+        db.session.commit()
+
+        flash('Project added', 'alert alert-success alert-dismissible fade show')
+        return redirect(url_for('customers.customer', customer_id=customer_id))
+
     customer=Customer.query.get(customer_id)
     # we need to use a dict as projects here because the project_table template expects this form
     projects = {}
     projects[customer] = Project.query.filter_by(customer_id=customer_id).all()
 
-    print(projects)
-
     return render_template('customers/customer.html',
                             projects=projects,
-                            customer=customer)
+                            customer=customer,
+                            form=form)
 
 
 @customers_blueprint.route('/edit/<customer_id>', methods=['GET', 'POST'])
