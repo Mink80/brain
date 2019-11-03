@@ -1,17 +1,19 @@
 <table class="table table-borderless table-hover w-100 mx-auto">
   <thead class="thead-light">
     <tr class="border">
-      <th scope="col" style="width: 30%">Customer</th>
-      <th scope="col" style="width: 49%">Project</th>
-      <th scope="col" style="width: 7%"">Infos</th>
-      <th scope="col" style="width: 7%"">Tasks</th>
-      <th scope="col" style="width: 7%"">Requests</th>
+      <th scope="col" style="width: 25%">Customer</th>
+      <th scope="col" style="width: 34%">Project</th>
+      <th scope="col" style="width: 15%">Partner</th>
+      <th scope="col" style="width: 7%">Infos</th>
+      <th scope="col" style="width: 7%">Tasks</th>
+      <th scope="col" style="width: 7%">Requests</th>
+      <th scope="col" style="width: 5%">Action</th>
     </tr>
   </thead>
   <tbody>
   {% for c, ps in projects.items() %}
     <tr>
-      <td colspan="5" class="border-top bg-light"><h6>{{c.name}}</h6></td>
+      <td colspan="7" class="border-top bg-light"><h6>{{c.name}}</h6></td>
     </tr>
     {% for p in ps %}
       <tr class="text-left">
@@ -21,9 +23,23 @@
             {{p.name}}
           </a>
         </td>
+        <td>
+          {% if not p.partner_id %}
+            -
+          {% else %}
+            {{ p.partner_name() }}
+          {% endif %}
+        </td>
         <td>{{ p.infos()| length }}</td>
         <td>{{ p.open_tasks()| length }}</td>
         <td>{{ p.requests()| length }}</td>
+        <td>
+          {% if not p.name == "Misc" %}
+            <a href="{{url_for('projects.rename', project_id=p.id)}}">
+              <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+            </a>
+          {% endif %}
+        </td>
       </tr>
     {% endfor %}
   {% endfor %}
