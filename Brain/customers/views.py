@@ -76,7 +76,7 @@ def edit(customer_id):
         db.session.add(customer_to_edit)
         db.session.commit()
 
-        flash('Task saved', 'alert alert-success alert-dismissible fade show')
+        flash('Customer saved', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('customers.index'))
 
     else:
