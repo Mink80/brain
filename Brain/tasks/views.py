@@ -37,7 +37,7 @@ def build_task(form):
 def index():
     form = build_form()
 
-    tasks = Task.query.filter_by(deleted=False)
+    tasks = Task.query.filter_by(deleted=False).all()
 
     if form.validate_on_submit():
         db.session.add(build_task(form))
@@ -83,7 +83,7 @@ def delete(task_id):
 
 @tasks_blueprint.route('/trash')
 def trash():
-    trashed_tasks = Task.query.filter_by(deleted=True)
+    trashed_tasks = Task.query.filter_by(deleted=True).all()
     return render_template('/tasks/trash.html', tasks=trashed_tasks)
 
 
