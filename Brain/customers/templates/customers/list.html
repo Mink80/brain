@@ -14,7 +14,7 @@
     {% include "customer_table.html" %}
 
 <div class="text-right">
-  <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addCustomer">
+  <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#addCustomer">
     Add Project
   </button>
 </div>
@@ -44,8 +44,8 @@
           </table>
         </div>
         <div class="modal-footer">
-          {{ form.submit(class="form-control-sm btn btn-primary") }}
-          <button type="button" class="btn-sm btn-secondary" data-dismiss="modal">Close</button>
+          {{ form.submit(class="form-control-sm btn btn-sm btn-primary") }}
+          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </form>
     </div>
