@@ -1,0 +1,39 @@
+<div class="text-right">
+  <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addProject">
+    Add Project
+  </button>
+</div>
+
+
+<!-- Modal: Add task -->
+<div class="modal fade" id="addProject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Project</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="w-100">
+            <tr>
+              <td scope="col" style="width: 30%">
+                {{ form.customer(class="form-control form-control-sm")}}
+              </td>
+              <td scope="col" style="width: 70%">
+                {{ form.name(class="form-control form-control-sm", autocomplete="off") }}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          {{ form.submit(class="form-control-sm btn btn-primary") }}
+          <button type="button" class="btn-sm btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

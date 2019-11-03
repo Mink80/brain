@@ -8,29 +8,14 @@
   <br>
 
   <div class="w-75 mx-auto">
+    {% include "flash_message.html" %}
+    {% include "flash_error_message.html" %}
+
     {% include "projects_table.html" %}
 
     <br>
 
-    <h6>Add a new Project:</h6>
-    <form method="POST">
-      {{ form.hidden_tag() }}
-      <table class="w-100">
-        <tr>
-          <td scope="col" style="width: 30%">
-            {{ form.customer(class="form-control form-control-sm")}}
-          </td>
-          <td scope="col" style="width: 70%">
-            {{ form.name(class="form-control form-control-sm", autocomplete="off") }}
-          </td>
-        </tr>
-      </table>
-
-      {% include "flash_error_message.html" %}
-
-      {{ form.submit(class="form-control form-control-sm btn btn-outline-primary w-100") }}
-
-    </form>
+    {% include "add_project.html" %}
 
   </div>
 </div>
