@@ -3,58 +3,62 @@
   {{ form.hidden_tag() }}
 {% endif %}
 
-<table class="table table-hover">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col" style="width: 25%">Name</th>
-      <th scope="col" style="width: 50%">Comment</th>
-      <th scope="col" style="width: 5%">Projects</th>
-      <th scope="col" style="width: 20% class="text-center">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for c in customers %}
-      {% if edit_id and c.id|int == edit_id|int %}
-        <tr>
-          <td>{{ form.name(class="form-control form-control-sm") }}</td>
-          <td>{{ form.comment(class="form-control form-control-sm", autocomplete="off") }}</td>
-          <td colspan="2">{{ form.submit(class="form-control form-control-sm btn btn-outline-primary") }}</td>
-        </tr>
-      {% else %}
-        <tr>
-          <td>
-            <a class="text-dark" title="Click to open customer details" href="{{url_for('customers.customer', customer_id=c.id)}}">
-              {{c.name}}
-            </a>
-          </td>
-          <td>
-            {% if c.comment != "" %}
-              <a class="text-dark" title="Click to edit" href="{{url_for('customers.edit', customer_id=c.id)}}">
-                {{c.comment}}
+{% if customers %}
+  <table class="table table-hover">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col" style="width: 25%">Name</th>
+        <th scope="col" style="width: 50%">Comment</th>
+        <th scope="col" style="width: 5%">Projects</th>
+        <th scope="col" style="width: 20% class="text-center">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in customers %}
+        {% if edit_id and c.id|int == edit_id|int %}
+          <tr>
+            <td>{{ form.name(class="form-control form-control-sm") }}</td>
+            <td>{{ form.comment(class="form-control form-control-sm", autocomplete="off") }}</td>
+            <td colspan="2">{{ form.submit(class="form-control form-control-sm btn btn-outline-primary") }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td>
+              <a class="text-dark" title="Click to open customer details" href="{{url_for('customers.customer', customer_id=c.id)}}">
+                {{c.name}}
               </a>
-            {% else %}
-              <a class="text-dark" title="Click to Edit" href="{{url_for('customers.edit', customer_id=c.id)}}">
-                -
-              </a>
-            {% endif %}
             </td>
-          <td class="text-center">
-            {{c.projects.count()}}
-          </td>
-          <td>
-            <a href="{{url_for('customers.edit', customer_id=c.id)}}">
-              <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
-            </a>
-            &nbsp;
-            <a href="{{url_for('customers.delete', customer_id=c.id)}}">
-              <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
-            </a>
-          </td>
-        </tr>
-      {% endif %}
-    {% endfor %}
-  </tbody>
-</table>
+            <td>
+              {% if c.comment != "" %}
+                <a class="text-dark" title="Click to edit" href="{{url_for('customers.edit', customer_id=c.id)}}">
+                  {{c.comment}}
+                </a>
+              {% else %}
+                <a class="text-dark" title="Click to Edit" href="{{url_for('customers.edit', customer_id=c.id)}}">
+                  -
+                </a>
+              {% endif %}
+              </td>
+            <td class="text-center">
+              {{c.projects.count()}}
+            </td>
+            <td>
+              <a href="{{url_for('customers.edit', customer_id=c.id)}}">
+                <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+              </a>
+              &nbsp;
+              <a href="{{url_for('customers.delete', customer_id=c.id)}}">
+                <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
+              </a>
+            </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  No customers created yet.
+{% endif %}
 
 {% if edit_id %}
   </form">

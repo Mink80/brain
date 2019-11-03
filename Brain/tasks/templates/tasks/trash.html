@@ -11,49 +11,56 @@
 
   {% include "flash_message.html" %}
 
-  <table class="table table-hover-big">
-    <thead class="thead-light">
-      <tr>
-        <th scope="col" style="width: 10%">Customer</th>
-        <th scope="col" style="width: 15%">Project</th>
-        <th scope="col" style="width: 35%">Text</th>
-        <th scope="col" style="width: 10%">Type</th>
-        <th scope="col" style="width: 10%">DueDate</th>
-        <th scope="col" style="width: 10%">Weekly</th>
-        <th scope="col" style="width: 10%">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for t in tasks %}
-      <tr bgcolor="{{t.bgcolor()}}">
-        <td>
-          {{ t.customer_name() }}
-          </td>
+  {% if tasks %}
+
+    <table class="table table-hover-big">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col" style="width: 10%">Customer</th>
+          <th scope="col" style="width: 15%">Project</th>
+          <th scope="col" style="width: 35%">Text</th>
+          <th scope="col" style="width: 10%">Type</th>
+          <th scope="col" style="width: 10%">DueDate</th>
+          <th scope="col" style="width: 10%">Weekly</th>
+          <th scope="col" style="width: 10%">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tasks %}
+        <tr bgcolor="{{t.bgcolor()}}">
           <td>
-            {{ t.project_name() }}
+            {{ t.customer_name() }}
+            </td>
+            <td>
+              {{ t.project_name() }}
+            </td>
+          <td>{{t.text}}</td>
+          <td>{{t.type.name}}</td>
+          <td>
+            {% if t.duedate %}
+              {{t.duedate}}
+            {% else %}
+              None
+            {% endif %}
+          <td>{{t.weekly.name}}</td>
+          <td>
+            <a href="{{url_for('tasks.undelete', task_id=t.id)}}">
+              <img src="{{url_for('static', filename='undelete.png')}}" width="16" height="16">
+            </a>
+            &nbsp;
+            <a href="{{url_for('tasks.shredd', task_id=t.id)}}">
+              <img src="{{url_for('static', filename='shredd.png')}}" width="16" height="16">
+            </a>
           </td>
-        <td>{{t.text}}</td>
-        <td>{{t.type.name}}</td>
-        <td>
-          {% if t.duedate %}
-            {{t.duedate}}
-          {% else %}
-            None
-          {% endif %}
-        <td>{{t.weekly.name}}</td>
-        <td>
-          <a href="{{url_for('tasks.undelete', task_id=t.id)}}">
-            <img src="{{url_for('static', filename='undelete.png')}}" width="16" height="16">
-          </a>
-          &nbsp;
-          <a href="{{url_for('tasks.shredd', task_id=t.id)}}">
-            <img src="{{url_for('static', filename='shredd.png')}}" width="16" height="16">
-          </a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+    No tasks in trash.
+  {% endif %}
+
 </div>
 
 {% endblock %}
