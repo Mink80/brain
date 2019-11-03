@@ -31,17 +31,17 @@
         {% else %}
         <tr bgcolor="{{t.bgcolor()}}">
           <td>
-            <a href="{{url_for('customers.customer', customer_id=t.customer_id())}}" class="text-dark">
+            <a title="Click to open customer details" href="{{url_for('customers.customer', customer_id=t.customer_id())}}" class="text-dark">
               {{ t.customer_name() }}
             </a>
             </td>
             <td>
-              <a class="text-dark" href="{{url_for('projects.project', project_id=t.project_id)}}">
+              <a title="Click to open Project details" class="text-dark" href="{{url_for('projects.project', project_id=t.project_id)}}">
                 {{ t.project_name() }}
               </a>
             </td>
           <td>
-            <a class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">
+            <a title="Click to edit" class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">
               {{t.text}}
             </a>
           </td>
