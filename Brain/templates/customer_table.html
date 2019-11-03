@@ -10,7 +10,7 @@
         <th scope="col" style="width: 25%">Name</th>
         <th scope="col" style="width: 50%">Comment</th>
         <th scope="col" style="width: 5%">Projects</th>
-        <th scope="col" style="width: 20% class="text-center">Action</th>
+        <th scope="col" style="width: 20%" class="text-center">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -42,7 +42,7 @@
             <td class="text-center">
               {{c.projects.count()}}
             </td>
-            <td>
+            <td class="text-center">
               <a href="{{url_for('customers.edit', customer_id=c.id)}}">
                 <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
               </a>
