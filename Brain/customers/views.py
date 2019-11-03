@@ -26,6 +26,7 @@ def index():
         db.session.add(project)
         db.session.commit()
 
+        flash('Customer added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('customers.index'))
 
     return render_template("customers/list.html", customers=all_customers, form=form)
