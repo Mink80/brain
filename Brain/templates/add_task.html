@@ -10,6 +10,13 @@
   </button>
 </div>
 
+<!-- focus on first input field in modal --->
+<script charset="utf-8" type="text/javascript">
+  $('body').on('shown.bs.modal', '#addTask', function () {
+    $('input:visible:enabled:first', this).focus();
+})
+</script>
+
 <!-- Modal: Add task -->
 <div class="modal fade" id="addTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
