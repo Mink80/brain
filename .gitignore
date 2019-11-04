@@ -1,3 +1,6 @@
 old_stuff
 *.pyc
 *.pyo
+.spyproject
+migrations
+Brain/data.sqlite
