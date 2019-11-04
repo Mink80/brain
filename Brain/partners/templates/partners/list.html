@@ -2,35 +2,80 @@
 {% block content %}
 
 <div class="w-100 p-5 small mx-auto">
-  <h5>Partners</h5>
+     <h5>Partners</h5>
 
-  <br>
+     <br>
 
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th scope="col" style="width: 30%">Name</th>
-        <th scope="col" style="width: 60%">Comment</th>
-        <th scope="col" style="width: 10%"">Projects</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for p in partners %}
-      <tr>
-        <td>{{p.name}}</td>
-        <td>
-          {% if p.comment != "" %}
-            {{p.comment}}
-          {% else %}
-            -
-          {% endif %}
-          </td>
-        <td>{{p.projects.count()}}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    
+    {% if partners %}
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 30%">Name</th>
+                <th scope="col" style="width: 60%">Comment</th>
+                <th scope="col" style="width: 10%"">Projects</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in partners %}
+              <tr>
+                <td>{{p.name}}</td>
+                <td>
+                  {% if p.comment != "" %}
+                    {{p.comment}}
+                  {% else %}
+                    -
+                  {% endif %}
+                  </td>
+                <td>{{p.projects.count()}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        No customers created yet.
+    {% endif %}
+
+    <div class="text-right">
+      <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#addPartner">
+        Add Customer
+      </button>
+    </div>
+    
+    <!-- Modal: Add task -->
+    <div class="modal fade" id="addPartner" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Add Partner</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <table class="w-100">
+                <tr>
+                  <td scope="col" style="width: 30%">
+                    {{ form.name(class="form-control form-control-sm", autocomplete="off") }}
+                  </td>
+                  <td scope="col" style="width: 70%">
+                    {{ form.comment(class="form-control form-control-sm", autocomplete="off") }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="modal-footer">
+              {{ form.submit(class="form-control-sm btn btn-sm btn-primary") }}
+              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
 </div>
+
 
 {% endblock %}
