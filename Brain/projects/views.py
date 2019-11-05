@@ -78,7 +78,7 @@ def edit(project_id):
     if project_info_form.validate_on_submit():
         project.opp = project_info_form.opp_number.data
         # partner == 0 means "None", so no write into the database
-        if project_info_form.partner.data is not 0:
+        if project_info_form.partner.data != 0:
             project.partner_id = project_info_form.partner.data
         project.notes = project_info_form.notes.data
         db.session.add(project)
@@ -89,3 +89,9 @@ def edit(project_id):
                                                 project_info_form=project_info_form,
                                                 project=project,
                                                 edit_info=True)
+
+
+@projects_blueprint.route('/rename/<project_id>')
+def rename(project_id):
+    pass
+
