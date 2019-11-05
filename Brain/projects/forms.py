@@ -25,5 +25,6 @@ class ProjectInfoForm(FlaskForm):
 
 class RenameForm(FlaskForm):
     new_name = TextField('New Name', validators=[DataRequired()])
+    partner = SelectField(u'Partner', coerce=int)
     origin = HiddenField()
     submit_rename = SubmitField("Save")

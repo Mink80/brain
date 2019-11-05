@@ -3,7 +3,7 @@ from Brain import db
 from Brain.models import Task, Customer, Project, Partner, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from Brain.tasks.views import build_task
-from Brain.projects.forms import ProjectForm, ProjectInfoForm
+from Brain.projects.forms import ProjectForm, ProjectInfoForm, RenameForm
 
 projects_blueprint = Blueprint('projects', __name__,
                                 template_folder='templates')
@@ -91,7 +91,34 @@ def edit(project_id):
                                                 edit_info=True)
 
 
-@projects_blueprint.route('/rename/<project_id>')
+@projects_blueprint.route('/rename/<project_id>', methods=['POST', 'GET'])
 def rename(project_id):
-    pass
+    to_rename = Project.query.get(project_id)
+    if not to_rename:
+        return render_template('400.html'), 400
 
+    form = RenameForm(new_name = to_rename.name,
+                        partner = to_rename.partner_id)
+
+    form.partner.choices = [(0, "None")]
+    form.partner.choices.extend([(p.id, p.name) for p in Partner.query.all()])
+
+    all_customers = Customer.query.all()
+    projects = {}
+    for c in all_customers:
+        projects[c] = Project.query.filter_by(customer_id=c.id).all()
+
+    if form.validate_on_submit():
+        to_rename.name = form.new_name.data
+        if form.partner.data != 0:
+            to_rename.partner_id = form.partner.data
+        else:
+            to_rename.partner_id = None
+        db.session.add(to_rename)
+        db.session.commit()
+        flash('Project edited', 'alert alert-success alert-dismissible fade show')
+        return redirect(url_for('projects.index'))
+
+    return render_template('/projects/list.html', projects=projects,
+                                                rename_id=to_rename.id,
+                                                form=form)

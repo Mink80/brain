@@ -15,7 +15,9 @@
 
     <br>
 
-    {% include "add_project.html" %}
+    {% if not rename_id %}
+      {% include "add_project.html" %}
+    {% endif %}
 
   </div>
 </div>

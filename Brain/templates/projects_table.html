@@ -1,3 +1,8 @@
+{% if rename_id %}
+  <form  method="POST">
+  {{ form.hidden_tag() }}
+{% endif %}
+
 <table class="table table-borderless table-hover w-100 mx-auto">
   <thead class="thead-light">
     <tr class="border">
@@ -18,26 +23,39 @@
     {% for p in ps %}
       <tr class="text-left">
         <td>&nbsp;</td>
-        <td>
-          <a class="text-dark" title="Click to open project" href="{{url_for('projects.project', project_id=p.id)}}">
-            {{p.name}}
-          </a>
-        </td>
-        <td>
-          {% if not p.partner_id %}
-            -
-          {% else %}
-            {{ p.partner_name() }}
-          {% endif %}
-        </td>
+        {% if rename_id and rename_id == p.id %}
+          <td>
+            {{ form.new_name(class="form-control form-control-sm") }}
+          </td>
+          <td>
+            {{ form.partner(class="form-control form-control-sm") }}
+          </td>
+        {% else %}
+          <td>
+            <a class="text-dark" title="Click to open project" href="{{url_for('projects.project', project_id=p.id)}}">
+              {{p.name}}
+            </a>
+          </td>
+          <td>
+            {% if not p.partner_id %}
+              -
+            {% else %}
+              {{ p.partner_name() }}
+            {% endif %}
+          </td>
+        {% endif %}
         <td>{{ p.infos()| length }}</td>
         <td>{{ p.open_tasks()| length }}</td>
         <td>{{ p.requests()| length }}</td>
         <td>
-          {% if not p.name == "Misc" %}
-            <a href="{{url_for('projects.rename', project_id=p.id)}}">
-              <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
-            </a>
+          {% if rename_id and rename_id == p.id %}
+            {{ form.submit_rename(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}
+          {% else %}
+            {% if not p.name == "Misc" %}
+              <a href="{{url_for('projects.rename', project_id=p.id)}}">
+                <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+              </a>
+            {% endif %}
           {% endif %}
         </td>
       </tr>
@@ -45,4 +63,9 @@
   {% endfor %}
   </tbody>
 </table>
+
+{% if rename_id %}
+  </form>
+{% endif %}
+
 <hr>
