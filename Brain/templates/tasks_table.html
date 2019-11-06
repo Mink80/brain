@@ -9,11 +9,11 @@
           <tr class="">
             <th scope="col" style="width: 10%">Customer</th>
             <th scope="col" style="width: 15%">Project</th>
-            <th scope="col" style="width: 35%">Text</th>
+            <th scope="col" style="width: 30%">Text</th>
             <th scope="col" style="width: 10%">Type</th>
             <th scope="col" style="width: 10%">DueDate</th>
             <th scope="col" style="width: 10%">Weekly</th>
-            <th scope="col" style="width: 10%" class="text-center">Action</th>
+            <th scope="col" style="width: 15%" class="text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -54,14 +54,21 @@
                 -
               {% endif %}
             <td>{{t.weekly.name}}</td>
-            <td class="text-center">
-              <a href="{{url_for('tasks.edit', task_id=t.id)}}">
+            <td class="text-left">
+              <a href="{{url_for('tasks.edit', task_id=t.id)}}" title="Edit">
                 <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
               </a>
               &nbsp;
-              <a href="{{url_for('tasks.delete', task_id=t.id)}}">
+              <a href="{{url_for('tasks.delete', task_id=t.id)}}" title="Delete">
                 <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
               </a>
+              {{ t.Type }}
+              {% if t.type.name == "Task" or t.type.name == "Request" %}
+              &nbsp;
+              <a href="{{url_for('tasks.done', task_id=t.id)}}" title="Mark done">
+                <img src="{{url_for('static', filename='done.png')}}" width="16" height="16">
+              </a>
+              {% endif %}
             </td>
           </tr>
           {% endif %}

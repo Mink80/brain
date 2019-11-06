@@ -66,6 +66,19 @@ def open():
     return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Open Tasks")
 
 
+@tasks_blueprint.route('/done/<task_id>', methods=['POST', 'GET'])
+def done(task_id):
+    mark_done = Task.query.get(task_id)
+    if mark_done:
+        mark_done.type = Type.Info
+        db.session.add(mark_done)
+        db.session.commit()
+        flash('Task marked done', 'alert alert-success alert-dismissible fade show')
+        return redirect(request.referrer)
+    else:
+        return render_template('400.html'), 400
+
+
 @tasks_blueprint.route('/delete/<task_id>')
 def delete(task_id):
     to_delete = Task.query.get(task_id)
