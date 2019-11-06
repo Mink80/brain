@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="w-100 p-5 small mx-auto">
+  <h5>Search results</h5>
+  <h6>Query: {{ search_string }}</h6>
+
+  <br>
+  {% if search_string %}
+    {% include "tasks_table.html" %}
+  {% else %}
+    No tasks found.
+  {% endif %}
+
+</div>
+
+{% endblock %}
