@@ -18,67 +18,66 @@
         </thead>
         <tbody>
           {% for t in tasks %}
-          {% if edit_id and t.id|int == edit_id|int %}
+            {% if edit_id and t.id|int == edit_id|int %}
 
-          <tr bgcolor="{{t.bgcolor()}}">
-            <td>{{ form.customer(class="form-control form-control-sm") }}</td>
-            <td>{{ form.project(class="form-control form-control-sm") }}</td>
-            <td>{{ form.text(class="form-control form-control-sm", autocomplete="off") }}</td>
-            <td>{{ form.type(class="form-control form-control-sm") }}</td>
-            <td>{{ form.duedate(class="form-control form-control-sm dp", size="10", autocomplete="off") }}</td>
-            <td>{{ form.weekly(class="form-control form-control-sm") }}</td>
-            <td>{{ form.submit(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}</td>
-          </tr>
+            <tr bgcolor="{{t.bgcolor()}}">
+              <td>{{ form.customer(class="form-control form-control-sm") }}</td>
+              <td>{{ form.project(class="form-control form-control-sm") }}</td>
+              <td>{{ form.text(class="form-control form-control-sm", autocomplete="off") }}</td>
+              <td>{{ form.type(class="form-control form-control-sm") }}</td>
+              <td>{{ form.duedate(class="form-control form-control-sm dp", size="10", autocomplete="off") }}</td>
+              <td>{{ form.weekly(class="form-control form-control-sm") }}</td>
+              <td>{{ form.submit(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}</td>
+            </tr>
           {% else %}
-          <tr bgcolor="{{t.bgcolor()}}">
-            <td>
-              <a title="Click to open customer details" href="{{url_for('customers.customer', customer_id=t.customer_id())}}" class="text-dark">
-                {{ t.customer_name() }}
-              </a>
-              </td>
+            <tr bgcolor="{{t.bgcolor()}}">
               <td>
-                <a title="Click to open Project details" class="text-dark" href="{{url_for('projects.project', project_id=t.project_id)}}">
-                  {{ t.project_name() }}
+                <a title="Click to open customer details" href="{{url_for('customers.customer', customer_id=t.customer_id())}}" class="text-dark">
+                  {{ t.customer_name() }}
+                </a>
+                </td>
+                <td>
+                  <a title="Click to open Project details" class="text-dark" href="{{url_for('projects.project', project_id=t.project_id)}}">
+                    {{ t.project_name() }}
+                  </a>
+                </td>
+              <td>
+                <a title="Click to edit" class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">
+                  {{t.text}}
                 </a>
               </td>
-            <td>
-              <a title="Click to edit" class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">
-                {{t.text}}
-              </a>
-            </td>
-            <td>{{t.type.name}}</td>
-            <td>
+              <td>{{t.type.name}}</td>
+              <td>
               {% if t.duedate %}
                 {{t.duedate|shortdate}}
               {% else %}
                 -
               {% endif %}
-            <td>{{t.weekly.name}}</td>
-            <td class="text-left">
-              <a href="{{url_for('tasks.edit', task_id=t.id)}}" title="Edit">
-                <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
-              </a>
-              &nbsp;
-              <a href="{{url_for('tasks.delete', task_id=t.id)}}" title="Delete">
-                <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
-              </a>
-              {{ t.Type }}
-              {% if t.type.name == "Task" or t.type.name == "Request" %}
-              &nbsp;
-              <a href="{{url_for('tasks.done', task_id=t.id)}}" title="Mark done">
-                <img src="{{url_for('static', filename='done.png')}}" width="16" height="16">
-              </a>
-              {% endif %}
-            </td>
-          </tr>
+              <td>{{t.weekly.name}}</td>
+              <td class="text-left">
+                <a href="{{url_for('tasks.edit', task_id=t.id)}}" title="Edit">
+                  <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+                </a>
+                &nbsp;
+                <a href="{{url_for('tasks.delete', task_id=t.id)}}" title="Delete">
+                  <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
+                </a>
+                {% if t.type.name == "Task" or t.type.name == "Request" %}
+                &nbsp;
+                <a href="{{url_for('tasks.done', task_id=t.id)}}" title="Mark done">
+                  <img src="{{url_for('static', filename='done.png')}}" width="14" height="14">
+                </a>
+                {% endif %}
+              </td>
+            </tr>
           {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
       No tasks found.
-    {% endif %}
+  {% endif %}
 
-    {% if edit_id %}
-      </form">
-    {% endif %}
+  {% if edit_id %}
+    </form>
+  {% endif %}
