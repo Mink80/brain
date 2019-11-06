@@ -54,7 +54,7 @@ def open():
     form = build_form()
 
     tasks = Task.query.filter_by(deleted=False). \
-                                filter(not_(Task.type.like(Type.Info)))
+                                filter(not_(Task.type.like(Type.Info))).all()
 
     if form.validate_on_submit():
         db.session.add(build_task(form))
