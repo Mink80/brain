@@ -13,7 +13,9 @@
             <th scope="col" style="width: 10%">Type</th>
             <th scope="col" style="width: 10%">DueDate</th>
             <th scope="col" style="width: 10%">Weekly</th>
-            <th scope="col" style="width: 15%" class="text-left">Actions</th>
+            {% if not no_actions_in_tasktable %}
+              <th scope="col" style="width: 15%" class="text-left">Actions</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -54,21 +56,23 @@
                 -
               {% endif %}
               <td>{{t.weekly.name}}</td>
-              <td class="text-left">
-                <a href="{{url_for('tasks.edit', task_id=t.id)}}" title="Edit">
-                  <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
-                </a>
-                &nbsp;
-                <a href="{{url_for('tasks.delete', task_id=t.id)}}" title="Delete">
-                  <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
-                </a>
-                {% if t.type.name == "Task" or t.type.name == "Request" %}
-                &nbsp;
-                <a href="{{url_for('tasks.done', task_id=t.id)}}" title="Mark done">
-                  <img src="{{url_for('static', filename='done.png')}}" width="14" height="14">
-                </a>
-                {% endif %}
-              </td>
+              {% if not no_actions_in_tasktable %}
+                <td class="text-left">
+                  <a href="{{url_for('tasks.edit', task_id=t.id)}}" title="Edit">
+                    <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+                  </a>
+                  &nbsp;
+                  <a href="{{url_for('tasks.delete', task_id=t.id)}}" title="Delete">
+                    <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
+                  </a>
+                  {% if t.type.name == "Task" or t.type.name == "Request" %}
+                  &nbsp;
+                  <a href="{{url_for('tasks.done', task_id=t.id)}}" title="Mark done">
+                    <img src="{{url_for('static', filename='done.png')}}" width="14" height="14">
+                  </a>
+                  {% endif %}
+                </td>
+              {% endif %}
             </tr>
           {% endif %}
         {% endfor %}

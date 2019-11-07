@@ -161,5 +161,6 @@ def delete(project_id):
                                                     edit_info=False,
                                                     delete_confirmation=True,
                                                     tasks=tasks,
+                                                    no_actions_in_tasktable=True,
                                                     cancel_delete=cancel_delete,
                                                     confirm_delete=confirm_delete)

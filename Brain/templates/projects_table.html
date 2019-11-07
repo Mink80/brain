@@ -12,7 +12,9 @@
       <th scope="col" style="width: 7%">Infos</th>
       <th scope="col" style="width: 7%">Tasks</th>
       <th scope="col" style="width: 7%">Requests</th>
-      <th scope="col" style="width: 10%">Actions</th>
+      {% if not no_actions_in_projcttable %}
+        <th scope="col" style="width: 10%">Actions</th>
+      {% endif %}
     </tr>
   </thead>
   <tbody>
@@ -47,21 +49,23 @@
         <td>{{ p.infos()| length }}</td>
         <td>{{ p.open_tasks()| length }}</td>
         <td>{{ p.requests()| length }}</td>
-        <td>
-          {% if rename_id and rename_id == p.id %}
-            {{ form.submit_rename(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}
-          {% else %}
-            {% if not p.name == "Misc" %}
-              <a href="{{url_for('projects.rename', project_id=p.id)}}">
-                <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
-              </a>
-              &nbsp;
-              <a href="{{url_for('projects.delete', project_id=p.id)}}" title="Delete">
-                <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
-              </a>
+        {% if not no_actions_in_projcttable %}
+          <td>
+            {% if rename_id and rename_id == p.id %}
+              {{ form.submit_rename(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}
+            {% else %}
+              {% if not p.name == "Misc" %}
+                <a href="{{url_for('projects.rename', project_id=p.id)}}">
+                  <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+                </a>
+                &nbsp;
+                <a href="{{url_for('projects.delete', project_id=p.id)}}" title="Delete">
+                  <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
+                </a>
+              {% endif %}
             {% endif %}
-          {% endif %}
-        </td>
+          </td>
+        {% endif %}
       </tr>
     {% endfor %}
   {% endfor %}
