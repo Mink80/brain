@@ -89,6 +89,7 @@ def edit(project_id):
         return redirect(url_for('projects.project', project_id=project.id))
 
     return render_template('/projects/project.html', tasks=tasks,
+                                                no_actions_in_tasktable=True,
                                                 project_info_form=project_info_form,
                                                 project=project,
                                                 edit_info=True)
@@ -99,8 +100,6 @@ def rename(project_id):
     to_rename = Project.query.get(project_id)
     if not to_rename:
         return render_template('400.html'), 400
-
-    ref = request.referrer
 
     form = RenameForm(new_name = to_rename.name,
                         partner = to_rename.partner_id)
