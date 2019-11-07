@@ -102,7 +102,7 @@ def trash():
 
 def delete_from_db(task_id):
     task_to_shredd = Task.query.get(task_id)
-    if task_to_shredd:
+    if task_to_shredd and task_to_shredd.deleted:
         db.session.delete(task_to_shredd)
         db.session.commit()
         return(True)
@@ -113,6 +113,8 @@ def delete_from_db(task_id):
 def shredd(task_id):
     if delete_from_db(task_id):
         flash('Task shredded', 'alert alert-warning alert-dismissible fade show')
+    else:
+        flash('Task not found or task not marked as deleted', 'alert alert-danger alert-dismissible fade show')
     return(redirect(url_for('tasks.trash')))
 
 
