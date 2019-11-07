@@ -48,4 +48,14 @@ def edit(partner_id):
 
 @partners_blueprint.route('/delete/<partner_id>', methods=['POST', 'GET'])
 def delete(partner_id):
-    pass
+    to_delete = Partner.query.get(partner_id)
+    if not to_delete:
+        return render_template('400.html'), 400
+
+    if to_delete.projects.count() == 0:
+        db.session.delete(to_delete)
+        db.session.commit()
+    else:
+        flash('This partners has assigned projects', 'alert alert-danger alert-dismissible fade show')
+
+    return redirect(url_for('partners.index'))
