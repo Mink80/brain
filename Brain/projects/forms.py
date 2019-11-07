@@ -30,7 +30,9 @@ class RenameForm(FlaskForm):
     submit_rename = SubmitField("Save")
 
 class ConfirmDelete(FlaskForm):
+    origin = HiddenField()
     confirm = SubmitField("Confirm delete")
 
 class CancelDelete(FlaskForm):
+    origin = HiddenField()
     cancel = SubmitField("Cancel")
