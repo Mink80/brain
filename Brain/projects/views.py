@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from Brain import db
 from Brain.models import Task, Customer, Project, Partner, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from Brain.tasks.views import build_task
-from Brain.projects.forms import ProjectForm, ProjectInfoForm, RenameForm
+from Brain.projects.forms import ProjectForm, ProjectInfoForm, RenameForm, \
+                                CancelDelete, ConfirmDelete
+import re
 
 projects_blueprint = Blueprint('projects', __name__,
                                 template_folder='templates')
@@ -97,6 +99,8 @@ def rename(project_id):
     if not to_rename:
         return render_template('400.html'), 400
 
+    ref = request.referrer
+
     form = RenameForm(new_name = to_rename.name,
                         partner = to_rename.partner_id)
 
@@ -122,3 +126,53 @@ def rename(project_id):
     return render_template('/projects/list.html', projects=projects,
                                                 rename_id=to_rename.id,
                                                 form=form)
+
+
+def execute_deletion(project_to_delete):
+    if not project_to_delete:
+        return False
+
+    # get all tasks of project
+    tasks = Task.query.filter_by(project_id=project_to_delete.id).all()
+
+    # delete all tasks
+    for t in tasks:
+        db.session.delete(t)
+
+    # delete project_table
+    db.session.delete(project_to_delete)
+
+    # write changes to db
+    db.session.commit()
+
+    return True
+
+
+@projects_blueprint.route('/delete/<project_id>', methods=['POST', 'GET'])
+def delete(project_id):
+    to_delete = Project.query.get(project_id)
+    if not to_delete or to_delete.name == "Misc":
+        return render_template('400.html'), 400
+
+    confirm_delete = ConfirmDelete()
+    cancel_delete = CancelDelete()
+
+    if confirm_delete.validate_on_submit() and confirm_delete.confirm.data:
+        if execute_deletion(to_delete):
+            flash('Project deleted', 'alert alert-danger alert-dismissible fade show')
+            return redirect(url_for('projects.index'))
+        else:
+            return render_template('400.html'), 400
+
+    elif cancel_delete.validate_on_submit() and cancel_delete.cancel.data:
+        return redirect(url_for("projects.index"))
+
+    tasks = Task.query.filter_by(project_id=project_id). \
+                        filter_by(deleted=False).all()
+
+    return render_template("/projects/project.html", project=to_delete,
+                                                    edit_info=False,
+                                                    delete_confirmation=True,
+                                                    tasks=tasks,
+                                                    cancel_delete=cancel_delete,
+                                                    confirm_delete=confirm_delete)

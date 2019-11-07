@@ -5,7 +5,11 @@
 {% include "dynamic_project_selector.html" %}
 
 <div class="w-100 p-5 small mx-auto">
-    <h5>Project {{project.name}}</h5>
+    {% if delete_confirmation %}
+      <h5>Confirm deletion of {{project.name}}</h5>
+    {% else %}
+      <h5>Project {{project.name}}</h5>
+    {% endif %}
     <h6>{{project.customer_name()}}</h6>
 
     <br>
@@ -15,7 +19,7 @@
     {% if edit_info %}
       <form method="POST">
         {{ project_info_form.hidden_tag() }}
-    {% else %}
+    {% elif not delete_confirmation %}
       {% include "flash_error_message.html" %}
     {% endif %}
 
@@ -30,10 +34,12 @@
             <a href="{{url_for('projects.project', project_id=project.id)}}" class="btn btn-sm btn-outline-secondary" role="button">
               Cancel
             </a>
-          {% else %}
+          {% elif not delete_confirmation %}
             <a href="{{url_for('projects.edit', project_id=project.id)}}" class="btn btn-sm btn-outline-primary" role="button">
               Edit
             </a>
+          {% else %}
+            &nbsp;
           {% endif %}
         </div>
       </div>
@@ -102,8 +108,37 @@
     {% endif %}
     <br>
 
-    {% if not edit_info %}
+    {% if delete_confirmation %}
+    <p>
+      There are also {{project.deleted_tasks()|count}} deleted tasks in the trash that will be shredded.
+    </p>
+    <br>
+    {% endif %}
+
+    {% if not edit_info and not delete_confirmation %}
       {% include "add_task.html" %}
+    {% endif %}
+
+    {% if delete_confirmation %}
+      <p class="font-weight-bold font-weight-normal">
+        Are you sure you want to permanently delete project {{project.name}} of customer {{project.customer_name()}} with all tasks?
+        <br>
+        This can not be undone!
+      </p>
+
+      <div class="row p-3">
+        <form method="POST">
+          {{ confirm_delete.hidden_tag() }}
+          {{ confirm_delete.confirm(class="form-control-sm btn btn-outline-danger") }}
+        </form>
+
+        &nbsp;&nbsp;
+
+        <form method="POST">
+          {{ cancel_delete.hidden_tag() }}
+          {{ cancel_delete.cancel(class="form-control-sm btn btn-outline-primary") }}
+        </form>
+      </div>
     {% endif %}
 
 </div>

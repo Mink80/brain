@@ -6,13 +6,13 @@
 <table class="table table-borderless table-hover w-100 mx-auto">
   <thead class="thead-light">
     <tr class="border">
-      <th scope="col" style="width: 25%">Customer</th>
+      <th scope="col" style="width: 20%">Customer</th>
       <th scope="col" style="width: 34%">Project</th>
       <th scope="col" style="width: 15%">Partner</th>
       <th scope="col" style="width: 7%">Infos</th>
       <th scope="col" style="width: 7%">Tasks</th>
       <th scope="col" style="width: 7%">Requests</th>
-      <th scope="col" style="width: 5%">Action</th>
+      <th scope="col" style="width: 10%">Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -54,6 +54,10 @@
             {% if not p.name == "Misc" %}
               <a href="{{url_for('projects.rename', project_id=p.id)}}">
                 <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
+              </a>
+              &nbsp;
+              <a href="{{url_for('projects.delete', project_id=p.id)}}" title="Delete">
+                <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
               </a>
             {% endif %}
           {% endif %}

@@ -28,3 +28,9 @@ class RenameForm(FlaskForm):
     partner = SelectField(u'Partner', coerce=int)
     origin = HiddenField()
     submit_rename = SubmitField("Save")
+
+class ConfirmDelete(FlaskForm):
+    confirm = SubmitField("Confirm delete")
+
+class CancelDelete(FlaskForm):
+    cancel = SubmitField("Cancel")
