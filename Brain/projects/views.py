@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from Brain import db
-from Brain import crypter
+from Brain.lib import  build_redirect_url, crypt_referrer, delete_project_from_db
 from Brain.models import Task, Customer, Project, Partner, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from Brain.tasks.views import build_task
@@ -129,47 +129,13 @@ def rename(project_id):
                                                 form=form)
 
 
-def execute_deletion(project_to_delete):
-    if not project_to_delete:
-        return False
-
-    # get all tasks of project
-    tasks = Task.query.filter_by(project_id=project_to_delete.id).all()
-
-    # delete all tasks
-    for t in tasks:
-        db.session.delete(t)
-
-    # delete project_table
-    db.session.delete(project_to_delete)
-
-    # write changes to db
-    db.session.commit()
-
-    return True
-
-
-def get_redirect_url_after_delete(origin):
-    if not origin or origin == "":
-        return url_for('projects.index')
-    else:
-        # internal server error will be triggert if referrer was user manipulated
-        # error will be cryptography.fernet.InvalidToken
-        return crypter.decrypt(origin.encode()).decode()
-
-
 @projects_blueprint.route('/delete/<project_id>', methods=['POST', 'GET'])
 def delete(project_id):
     to_delete = Project.query.get(project_id)
     if not to_delete or to_delete.name == "Misc":
         return render_template('400.html'), 400
 
-    if not request.referrer:
-        # in case the url gets called by user input directly
-        ref = ""
-    else:
-        # crypt the referrer
-        ref = crypter.encrypt(request.referrer.encode()).decode()
+    ref = crypt_referrer(request.referrer)
 
     # build forms and fill in the crypted referrer (or "")
     confirm_delete = ConfirmDelete(origin=ref)
@@ -177,15 +143,15 @@ def delete(project_id):
 
     # deletion was confirmed by user
     if confirm_delete.validate_on_submit() and confirm_delete.confirm.data:
-        if execute_deletion(to_delete):
+        if delete_project_from_db(to_delete):
             flash('Project deleted', 'alert alert-danger alert-dismissible fade show')
-            return redirect(get_redirect_url_after_delete(confirm_delete.origin.data))
+            return redirect(build_redirect_url(confirm_delete.origin.data, 'projects.index'))
         else:
             return render_template('400.html'), 400
 
     # deletion was canceled by user
     elif cancel_delete.validate_on_submit() and cancel_delete.cancel.data:
-        return redirect(get_redirect_url_after_delete(confirm_delete.origin.data))
+        return redirect(build_redirect_url(confirm_delete.origin.data, 'projects.index'))
 
     tasks = Task.query.filter_by(project_id=project_id). \
                         filter_by(deleted=False).all()

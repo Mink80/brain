@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from Brain import db
+from Brain.lib import delete_customer_from_db
 from Brain.models import Customer, Project, Task
 from Brain.customers.forms import CustomerForm, ConfirmDelete, CancelDelete
 from Brain.projects.forms import ProjectForm
@@ -86,36 +87,6 @@ def edit(customer_id):
                                                         customers=customers)
 
 
-def execute_deletion(customer):
-    # validate customer
-    if customer:
-        # get all projects
-        projects_to_delete = customer.projects.all()
-
-        # get all tasks
-        tasks_to_delete = []
-        for p in projects_to_delete:
-            tasks_to_delete.extend(p.tasks.all())
-
-        # delete tasks
-        for t in tasks_to_delete:
-            db.session.delete(t)
-
-        # delete projects
-        for p in projects_to_delete:
-            db.session.delete(p)
-
-        # delete customer
-        db.session.delete(customer)
-
-        # commit to db
-        db.session.commit()
-
-        return(True)
-
-    return(False)
-
-
 @customers_blueprint.route('/delete/<customer_id>', methods=['GET', 'POST'])
 def delete(customer_id):
     # create Forms
@@ -129,9 +100,11 @@ def delete(customer_id):
         return redirect(url_for('customers.index'))
 
     if confirm_delete.validate_on_submit() and confirm_delete.confirm.data:
-        if execute_deletion(to_delete):
+        if delete_customer_from_db(to_delete):
             flash('Customer deleted', 'alert alert-danger alert-dismissible fade show')
             return redirect(url_for('customers.index'))
+        else:
+            return render_template('400.html'), 400
 
     elif cancel_delete.validate_on_submit() and cancel_delete.cancel.data:
         return redirect(url_for("customers.index"))
