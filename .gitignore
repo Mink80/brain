@@ -3,4 +3,4 @@ old_stuff
 *.pyo
 .spyproject
 migrations
-Brain/data.sqlite
+*.sqlite

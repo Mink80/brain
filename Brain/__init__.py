@@ -16,9 +16,10 @@ log.setLevel(logging.DEBUG)
 # Forms config
 app.config['SECRET_KEY'] = 'foobar'
 basedir = os.path.abspath(os.path.dirname(__file__))
+dbdir = os.path.join(basedir, "database")
 
 # DB Config
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir,"data.sqlite")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(dbdir,"data.sqlite")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
