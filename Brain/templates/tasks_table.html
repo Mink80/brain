@@ -13,9 +13,7 @@
         <th scope="col" style="width: 10%">Type</th>
         <th scope="col" style="width: 10%">DueDate</th>
         <th scope="col" style="width: 10%">Weekly</th>
-        {% if not no_actions_in_tasktable %}
-          <th scope="col" style="width: 15%" class="text-left">Actions</th>
-        {% endif %}
+        <th scope="col" style="width: 15%" class="text-left">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -42,11 +40,15 @@
                 {{ t.project_name() }}
               </a>
             </td>
-            <td>
-              <a title="Click to edit" class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">
-                {{t.text}}
-              </a>
-            </td>
+            {% if not no_actions_in_tasktable %}
+              <td>
+                <a title="Click to edit" class="text-dark" href="{{url_for('tasks.edit', task_id=t.id)}}">
+                  {{t.text}}
+                </a>
+              </td>
+            {% else %}
+              <td> {{t.text}} </td>
+            {% endif %}
             <td>{{t.type.name}}</td>
             <td>
               {% if t.duedate %}
@@ -72,6 +74,8 @@
                   </a>
                 {% endif %}
               </td>
+            {% else %}
+            <td>&nbsp;</td>
             {% endif %}
           </tr>
         {% endif %}
