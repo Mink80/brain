@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash
-from Brain import db
+from Brain import db, crypter
 from Brain.models import Task, Customer, Project, Type, Weekly
 from Brain.tasks.forms import TaskForm
 from datetime import date, datetime
 from sqlalchemy import not_
 import re
 from cryptography.fernet import Fernet
-from Brain import crypter
 
 tasks_blueprint = Blueprint('tasks', __name__,
                             template_folder='templates')
@@ -91,7 +90,7 @@ def delete(task_id):
     else:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
 
-    return redirect(url_for('tasks.index'))
+    return redirect(request.referrer)
 
 
 @tasks_blueprint.route('/trash')
