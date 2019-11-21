@@ -35,7 +35,11 @@ def index():
 
 @customers_blueprint.route('/customer/<customer_id>', methods=['GET', 'POST'])
 def customer(customer_id):
-    form = ProjectForm()
+    customer = Customer.query.get(customer_id)
+    if not customer:
+        return render_template('400.html'), 400
+
+    form = ProjectForm(customer=customer.id)
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
 
     if form.validate_on_submit():
