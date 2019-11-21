@@ -18,7 +18,13 @@
   <tbody>
   {% for c, ps in projects.items() %}
     <tr>
-      <td colspan="7" class="border-top bg-light"><h6>{{c.name}}</h6></td>
+      <td colspan="7" class="border-top bg-light">
+        <h6>
+          <a class="text-dark" href="{{url_for('customers.customer', customer_id=c.id)}}" title="Click to open customer">
+            {{c.name}}
+          </a>
+        </h6>
+      </td>
     </tr>
     {% for p in ps %}
       <tr class="text-left">
