@@ -19,7 +19,7 @@ class ProjectForm(FlaskForm):
 class ProjectInfoForm(FlaskForm):
     opp_number = TextField('Opportunity', render_kw={"placeholder": "Opp number"})
     partner = SelectField(u'Partner', coerce=int, )
-    notes = TextAreaField()
+    notes = TextAreaField(id="summernote")
     submit_project_info = SubmitField("Save")
 
 
