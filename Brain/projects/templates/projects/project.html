@@ -4,6 +4,9 @@
 
 {% include "dynamic_project_selector.html" %}
 
+<!-- summernote wysiwyg editor
+     see: https://summernote.org/
+--->
 <script>
   $(document).ready(function() {
     $('#summernote').summernote(
@@ -25,6 +28,7 @@
     );
   });
 </script>
+<!-- /summernote wysiwyg editor -->
 
 <div class="w-100 p-5 small mx-auto">
     {% if delete_confirmation %}
