@@ -31,7 +31,8 @@ def index():
     for c in all_customers:
         projects[c] = Project.query.filter_by(customer_id=c.id).all()
 
-    return render_template('/projects/list.html', projects=projects,
+    return render_template('/projects/list.html', headline="Projects",
+                                                    projects=projects,
                                                     form=form)
 
 
@@ -102,15 +103,11 @@ def rename(project_id):
         return render_template('400.html'), 400
 
     form = RenameForm(new_name = to_rename.name,
-                        partner = to_rename.partner_id)
+                        partner = to_rename.partner_id,
+                        origin = crypt_referrer(request.referrer))
 
     form.partner.choices = [(0, "None")]
     form.partner.choices.extend([(p.id, p.name) for p in Partner.query.all()])
-
-    all_customers = Customer.query.all()
-    projects = {}
-    for c in all_customers:
-        projects[c] = Project.query.filter_by(customer_id=c.id).all()
 
     if form.validate_on_submit():
         to_rename.name = form.new_name.data
@@ -121,9 +118,15 @@ def rename(project_id):
         db.session.add(to_rename)
         db.session.commit()
         flash('Project edited', 'alert alert-success alert-dismissible fade show')
-        return redirect(url_for('projects.index'))
+        return redirect(build_redirect_url(form.origin.data, 'projects.index'))
 
-    return render_template('/projects/list.html', projects=projects,
+    all_customers = Customer.query.all()
+    projects = {}
+    for c in all_customers:
+        projects[c] = Project.query.filter_by(customer_id=c.id).all()
+
+    return render_template('/projects/list.html', headline=f"Edit Project {to_rename.name}",
+                                                projects=projects,
                                                 rename_id=to_rename.id,
                                                 form=form)
 
