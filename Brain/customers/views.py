@@ -133,6 +133,6 @@ def delete(customer_id):
                                                                 confirm_delete=confirm_delete,
                                                                 cancel_delete=cancel_delete )
     else:
-        if execute_deletion(to_delete):
+        if delete_customer_from_db(to_delete):
             flash('Customer deleted', 'alert alert-danger alert-dismissible fade show')
             return redirect(url_for('customers.index'))
