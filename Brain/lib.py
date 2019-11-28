@@ -1,6 +1,7 @@
 from flask import url_for
 from Brain import db, crypter
-from Brain.models import Task
+from Brain.models import Task, HistoryItem, Type, Weekly
+from Brain.tasks.forms import TaskForm
 
 # expects a crypted url in origin
 def build_redirect_url(origin, alternative):
@@ -21,6 +22,14 @@ def crypt_referrer(referrer):
     else:
         # crypt the referrer
         return crypter.encrypt(referrer.encode()).decode()
+
+
+def write_history(operation, model, entity_id, customer_name=None,
+                    project_name=None, comment=None):
+    history_item = HistoryItem(operation, model, entity_id, customer_name,
+                                project_name, comment)
+    db.session.add(history_item)
+    db.session.commit()
 
 
 def delete_project_from_db(project):
@@ -56,3 +65,26 @@ def delete_customer_from_db(customer):
     db.session.commit()
 
     return(True)
+
+
+def task_changed(task, taskform, duedate):
+    if not task or not taskform:
+        return False
+
+    return task.text != taskform.text.data or \
+            task.project_id != taskform.project.data or \
+            task.type != Type(taskform.type.data) or \
+            task.duedate != duedate or \
+            task.weekly != Weekly(taskform.weekly.data)
+
+
+def project_changed():
+    pass
+
+
+def customer_changed():
+    pass
+
+
+def partner_changed():
+    pass
