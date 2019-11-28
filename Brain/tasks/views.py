@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash
 from Brain import db, crypter
-from Brain.models import Task, Customer, Project, Type, Weekly
+from Brain.models import Task, Customer, Project, Type, Weekly, Model, Operation
 from Brain.tasks.forms import TaskForm
+from Brain.lib import task_changed, write_history
 from datetime import date, datetime
 from sqlalchemy import not_
 import re
@@ -39,8 +40,15 @@ def index():
     tasks = Task.query.filter_by(deleted=False).all()
 
     if form.validate_on_submit():
-        db.session.add(build_task(form))
+        task = build_task(form)
+        db.session.add(task)
         db.session.commit()
+        write_history(operation=Operation.Added,
+                        model=Model.Task,
+                        entity_id=task.id,
+                        customer_name=task.customer_name(),
+                        project_name=task.project_name(),
+                        comment=f"Added {task.type.name} for project '{task.project_name()}' of customer '{task.customer_name()}'")
 
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
@@ -56,8 +64,10 @@ def open():
                                 filter(not_(Task.type.like(Type.Info))).all()
 
     if form.validate_on_submit():
-        db.session.add(build_task(form))
+        task = build_task(form)
+        db.session.add(task)
         db.session.commit()
+        write_history(Operation.Added, Model.Task, task.id)
 
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.open'))
@@ -70,8 +80,10 @@ def done(task_id):
     mark_done = Task.query.get(task_id)
     if mark_done:
         mark_done.type = Type.Info
+        mark_done.last_change = datetime.now()
         db.session.add(mark_done)
         db.session.commit()
+        write_history(Operation.Changed, Model.Task, mark_done.id, "Marked done")
         flash('Task marked done', 'alert alert-success alert-dismissible fade show')
         return redirect(request.referrer)
     else:
@@ -84,8 +96,10 @@ def delete(task_id):
     if to_delete:
         to_delete.deleted = True
         to_delete.deleted_at = datetime.now()
+        to_delete.last_change = datetime.now()
         db.session.add(to_delete)
         db.session.commit()
+        write_history(Operation.Deleted, Model.Task, to_delete.id)
         flash('Task deleted', 'alert alert-warning alert-dismissible fade show')
     else:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
@@ -102,6 +116,13 @@ def trash():
 def delete_from_db(task_id):
     task_to_shredd = Task.query.get(task_id)
     if task_to_shredd and task_to_shredd.deleted:
+        write_history(operation=Operation.Shredded,
+                        model=Model.Task,
+                        entity_id=task_to_shredd.id,
+                        customer_name=task_to_shredd.customer_name(),
+                        project_name=task_to_shredd.project_name(),
+                        comment=f"Project: {task_to_shredd.project_name()} Customer: {task_to_shredd.customer_name()}")
+
         db.session.delete(task_to_shredd)
         db.session.commit()
         return(True)
@@ -119,12 +140,14 @@ def shredd(task_id):
 
 @tasks_blueprint.route('/undelete/<task_id>')
 def undelete(task_id):
-    to_delete = Task.query.get(task_id)
-    if to_delete:
-        to_delete.deleted = False
-        to_delete.deleted_at = datetime.now()
-        db.session.add(to_delete)
+    to_undelete = Task.query.get(task_id)
+    if to_undelete:
+        to_undelete.deleted = False
+        to_undelete.deleted_at = None
+        to_undelete.last_change = datetime.now()
+        db.session.add(to_undelete)
         db.session.commit()
+        write_history(Operation.Undeleted, Model.Task, to_undelete.id)
         flash('Task undeleted', 'alert alert-success alert-dismissible fade show')
     else:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
@@ -168,16 +191,20 @@ def edit(task_id):
         else:
             duedate = None
 
-        to_edit.text = form.text.data
-        to_edit.project_id = form.project.data
-        to_edit.type = Type(form.type.data)
-        to_edit.duedate = duedate
-        to_edit.weekly = Weekly(form.weekly.data)
+        if task_changed(to_edit, form, duedate):
+            to_edit.text = form.text.data
+            to_edit.project_id = form.project.data
+            to_edit.type = Type(form.type.data)
+            to_edit.duedate = duedate
+            to_edit.weekly = Weekly(form.weekly.data)
+            to_edit.last_change = datetime.now()
 
-        db.session.add(to_edit)
-        db.session.commit()
+            db.session.add(to_edit)
+            db.session.commit()
+            write_history(Operation.Changed, Model.Task, to_edit.id)
 
-        flash('Task saved', 'alert alert-success alert-dismissible fade show')
+            flash('Task saved', 'alert alert-success alert-dismissible fade show')
+
         return redirect(crypter.decrypt(form.referrer.data.encode()).decode())
 
     else:
