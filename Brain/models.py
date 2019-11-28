@@ -15,11 +15,26 @@ class Weekly(Enum):
     General = 3
     Upcoming = 4
 
+class Model(Enum):
+    Task = 0
+    Customer = 1
+    Partner = 2
+    Project = 3
+
+class Operation(Enum):
+    Added = 0
+    Changed = 1
+    Deleted = 2
+    Undeleted = 3
+    Shredded = 4
+
+
 # DB Models
 class Task(db.Model):
     __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
+    # date of creation
     cdate = db.Column(db.DateTime, nullable=False)
     type = db.Column(db.Enum(Type))
     duedate = db.Column(db.Date)
@@ -27,12 +42,12 @@ class Task(db.Model):
     weekly = db.Column(db.Enum(Weekly))
     deleted = db.Column(db.Boolean)
     deleted_at = db.Column(db.DateTime)
-    #customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+    last_change = db.Column(db.DateTime)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
 
     def __init__(self, text, project_id, cdate=datetime.now(), type=Type.Info,
                 duedate=None, parent=0, weekly=Weekly.No, deleted=False,
-                deleted_at=None, customer_id=None):
+                deleted_at=None, last_change=datetime.now()):
         self.text = text
         self.cdate = cdate
         self.type = type
@@ -41,7 +56,7 @@ class Task(db.Model):
         self.weekly = weekly
         self.deleted = deleted
         self.deleted_at = deleted_at
-        self.customer_id = customer_id
+        self.last_change = last_change
         self.project_id = project_id
 
     def __repr__(self):
@@ -152,3 +167,28 @@ class Project(db.Model):
 
     def __repr__(self):
         return f"ProjectID: {self.id}, Name: {self.name}, OPP: {self.opp}, Customer: {self.customer_id}, Partner {self.partner_id}"
+
+
+class HistoryItem(db.Model):
+    __tablename__ = 'history'
+    id = db.Column(db.Integer, primary_key=True)
+    operation = db.Column(db.Enum(Operation), nullable=False)
+    model = db.Column(db.Enum(Model), nullable=False)
+    entity_id = db.Column(db.Integer, nullable=False)
+    customer_name = db.Column(db.Text)
+    project_name = db.Column(db.Text)
+    comment = db.Column(db.Text)
+    time = db.Column(db.DateTime)
+
+    def __init__(self, operation, model, entity_id, customer_name=None,
+                    project_name=None, comment=None):
+        self.operation = operation
+        self.model = model
+        self.entity_id = entity_id
+        self.customer_name = customer_name
+        self.project_name = project_name
+        self.comment = comment
+        self.time = datetime.now()
+
+    def __repr__(self):
+        return f"Operation: {self.operation}, Model: {self.model}, Entity ID: {self.entity_id}, Time: {self.time}"
