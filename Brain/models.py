@@ -1,33 +1,6 @@
 from Brain import db
-from enum import Enum
 from datetime import date, datetime, timedelta
-
-# Enums
-class Type(Enum):
-    Info = 0
-    Task = 1
-    Request = 2
-
-class Weekly(Enum):
-    No = 0
-    Highlight = 1
-    Lowlight = 2
-    General = 3
-    Upcoming = 4
-
-class Model(Enum):
-    Task = 0
-    Customer = 1
-    Partner = 2
-    Project = 3
-
-class Operation(Enum):
-    Added = 0
-    Changed = 1
-    Deleted = 2
-    Undeleted = 3
-    Shredded = 4
-
+from .types import *
 
 # DB Models
 class Task(db.Model):
