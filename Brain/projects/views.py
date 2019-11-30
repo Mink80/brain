@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from Brain import db
 from Brain.lib import  build_redirect_url, crypt_referrer, delete_project_from_db
-from Brain.models import Task, Customer, Project, Partner, Type, Weekly
+from Brain.models import Task, Customer, Project, Partner
+from Brain.types import Type, Weekly
 from Brain.tasks.forms import TaskForm
 from Brain.tasks.views import build_task
 from Brain.projects.forms import ProjectForm, ProjectInfoForm, RenameForm, \

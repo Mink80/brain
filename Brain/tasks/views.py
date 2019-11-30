@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash
 from Brain import db, crypter
-from Brain.models import Task, Customer, Project, Type, Weekly, Model, Operation
+from Brain.models import Task, Customer, Project
 from Brain.tasks.forms import TaskForm
+from Brain.types import Type, Weekly, Model, Operation
 from Brain.lib import task_changed, write_history
 from datetime import date, datetime
 from sqlalchemy import not_
