@@ -44,7 +44,7 @@ def write_new_task_to_db(form):
                     customer_name=task.customer_name(),
                     project_name=task.project_name(),
                     comment=f"Added {task.type.name} for project '{task.project_name()}' of customer '{task.customer_name()}'")
-
+    return task
 
 @tasks_blueprint.route('/', methods=['GET','POST'])
 def index():
@@ -53,8 +53,8 @@ def index():
     tasks = Task.query.filter_by(deleted=False).all()
 
     if form.validate_on_submit():
-        write_new_task_to_db(form)
-        flash('Task added', 'alert alert-success alert-dismissible fade show')
+        task = write_new_task_to_db(form)
+        flash(f'{task.type.name} added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
 
     return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Tasks")
@@ -68,8 +68,8 @@ def open():
                                 filter(not_(Task.type.like(Type.Info))).all()
 
     if form.validate_on_submit():
-        write_new_task_to_db(form)
-        flash('Task added', 'alert alert-success alert-dismissible fade show')
+        task = write_new_task_to_db(form)
+        flash(f'{task.type.name} added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.open'))
 
     return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Open Tasks")
@@ -218,7 +218,6 @@ def edit(task_id):
 
         # gets back None if nothing changed, else returnes TaskChange[] (Enum)
         changed_items = task_changed(to_edit, form, duedate)
-        print(changed_items)
 
         if changed_items and len(changed_items) > 1:
             to_edit.text = form.text.data
