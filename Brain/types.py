@@ -2,9 +2,9 @@ from enum import Enum
 
 # Enums
 class Type(Enum):
-    Info = 0
-    Task = 1
-    Request = 2
+    Task = 0
+    Request = 1
+    Info = 2
 
 class Weekly(Enum):
     No = 0
@@ -26,11 +26,3 @@ class Operation(Enum):
     Deleted = 2
     Undeleted = 3
     Shredded = 4
-
-# What has been changed during task edit
-class TaskChange(Enum):
-    Text = 0
-    Project = 1
-    Type = 2
-    DueDate = 3
-    Weekly = 4
