@@ -34,6 +34,18 @@ def build_task(form):
                 weekly=Weekly(form.weekly.data))
 
 
+def write_new_task_to_db(form):
+    task = build_task(form)
+    db.session.add(task)
+    db.session.commit()
+    write_history(operation=Operation.Added,
+                    model=Model.Task,
+                    entity_id=task.id,
+                    customer_name=task.customer_name(),
+                    project_name=task.project_name(),
+                    comment=f"Added {task.type.name} for project '{task.project_name()}' of customer '{task.customer_name()}'")
+
+
 @tasks_blueprint.route('/', methods=['GET','POST'])
 def index():
     form = build_form()
@@ -41,16 +53,7 @@ def index():
     tasks = Task.query.filter_by(deleted=False).all()
 
     if form.validate_on_submit():
-        task = build_task(form)
-        db.session.add(task)
-        db.session.commit()
-        write_history(operation=Operation.Added,
-                        model=Model.Task,
-                        entity_id=task.id,
-                        customer_name=task.customer_name(),
-                        project_name=task.project_name(),
-                        comment=f"Added {task.type.name} for project '{task.project_name()}' of customer '{task.customer_name()}'")
-
+        write_new_task_to_db(form)
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
 
@@ -65,11 +68,7 @@ def open():
                                 filter(not_(Task.type.like(Type.Info))).all()
 
     if form.validate_on_submit():
-        task = build_task(form)
-        db.session.add(task)
-        db.session.commit()
-        write_history(Operation.Added, Model.Task, task.id)
-
+        write_new_task_to_db(form)
         flash('Task added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.open'))
 
@@ -80,12 +79,26 @@ def open():
 def done(task_id):
     mark_done = Task.query.get(task_id)
     if mark_done:
+        # save old type state
+        oldstate = mark_done.type
+
+        # change type from task or request to info
         mark_done.type = Type.Info
         mark_done.last_change = datetime.now()
+
+        # commit to db
         db.session.add(mark_done)
         db.session.commit()
-        write_history(Operation.Changed, Model.Task, mark_done.id, "Marked done")
-        flash('Task marked done', 'alert alert-success alert-dismissible fade show')
+
+        # write to history db table
+        write_history(operation=Operation.Changed,
+                        model=Model.Task,
+                        entity_id=mark_done.id,
+                        customer_name=mark_done.customer_name(),
+                        project_name=mark_done.project_name(),
+                        comment=f"Marked {oldstate.name} of project '{mark_done.project_name()}' of the customer '{mark_done.customer_name()}' as done.")
+
+        flash(f'{oldstate.name} marked done', 'alert alert-success alert-dismissible fade show')
         return redirect(request.referrer)
     else:
         return render_template('400.html'), 400
@@ -100,7 +113,14 @@ def delete(task_id):
         to_delete.last_change = datetime.now()
         db.session.add(to_delete)
         db.session.commit()
-        write_history(Operation.Deleted, Model.Task, to_delete.id)
+
+        write_history(operation=Operation.Deleted,
+                        model=Model.Task,
+                        entity_id=to_delete.id,
+                        customer_name=to_delete.customer_name(),
+                        project_name=to_delete.project_name(),
+                        comment=f"Deleted {to_delete.type.name} of project '{to_delete.project_name()}' of the customer '{to_delete.customer_name()}'.")
+
         flash('Task deleted', 'alert alert-warning alert-dismissible fade show')
     else:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
@@ -117,15 +137,14 @@ def trash():
 def delete_from_db(task_id):
     task_to_shredd = Task.query.get(task_id)
     if task_to_shredd and task_to_shredd.deleted:
+        db.session.delete(task_to_shredd)
+        db.session.commit()
         write_history(operation=Operation.Shredded,
                         model=Model.Task,
                         entity_id=task_to_shredd.id,
                         customer_name=task_to_shredd.customer_name(),
                         project_name=task_to_shredd.project_name(),
-                        comment=f"Project: {task_to_shredd.project_name()} Customer: {task_to_shredd.customer_name()}")
-
-        db.session.delete(task_to_shredd)
-        db.session.commit()
+                        comment=f"Shredded {task_to_shredd.type.name} of project '{task_to_shredd.project_name()}' of the customer '{task_to_shredd.customer_name()}'")
         return(True)
     return(False)
 
@@ -148,7 +167,12 @@ def undelete(task_id):
         to_undelete.last_change = datetime.now()
         db.session.add(to_undelete)
         db.session.commit()
-        write_history(Operation.Undeleted, Model.Task, to_undelete.id)
+        write_history(operation=Operation.Undeleted,
+                        model=Model.Task,
+                        entity_id=to_undelete.id,
+                        customer_name=to_undelete.customer_name(),
+                        project_name=to_undelete.project_name(),
+                        comment=f"Undeleted {to_undelete.type.name} of project '{to_undelete.project_name()}' of customer: '{to_undelete.customer_name()}'")
         flash('Task undeleted', 'alert alert-success alert-dismissible fade show')
     else:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
@@ -192,7 +216,11 @@ def edit(task_id):
         else:
             duedate = None
 
-        if task_changed(to_edit, form, duedate):
+        # gets back None if nothing changed, else returnes TaskChange[] (Enum)
+        changed_items = task_changed(to_edit, form, duedate)
+        print(changed_items)
+
+        if changed_items and len(changed_items) > 1:
             to_edit.text = form.text.data
             to_edit.project_id = form.project.data
             to_edit.type = Type(form.type.data)
@@ -202,9 +230,15 @@ def edit(task_id):
 
             db.session.add(to_edit)
             db.session.commit()
-            write_history(Operation.Changed, Model.Task, to_edit.id)
 
-            flash('Task saved', 'alert alert-success alert-dismissible fade show')
+            write_history(operation=Operation.Changed,
+                            model=Model.Task,
+                            entity_id=to_edit.id,
+                            customer_name=to_edit.customer_name(),
+                            project_name=to_edit.project_name(),
+                            comment=f"Modified {to_edit.type.name} of project '{to_edit.project_name()}' of customer: '{to_edit.customer_name()}': {changed_items}changed.")
+
+            flash(f'{to_edit.type.name} saved', 'alert alert-success alert-dismissible fade show')
 
         return redirect(crypter.decrypt(form.referrer.data.encode()).decode())
 

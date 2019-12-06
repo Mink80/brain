@@ -66,16 +66,25 @@ def delete_customer_from_db(customer):
 
     return(True)
 
-
+# returns a string with changed fields separated with a space
 def task_changed(task, taskform, duedate):
     if not task or not taskform:
         return False
 
-    return task.text != taskform.text.data or \
-            task.project_id != taskform.project.data or \
-            task.type != Type(taskform.type.data) or \
-            task.duedate != duedate or \
-            task.weekly != Weekly(taskform.weekly.data)
+    changed = ""
+
+    if task.text != taskform.text.data:
+        changed = changed + "text "
+    if task.project_id != taskform.project.data:
+        changed = changed + "project "
+    if task.type != Type(taskform.type.data):
+        changed = changed + "type "
+    if task.duedate != duedate:
+        changed = changed + "duedate "
+    if task.weekly != Weekly(taskform.weekly.data):
+        changed = changed + "weekly "
+
+    return changed
 
 
 def project_changed():
