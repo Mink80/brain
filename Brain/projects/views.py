@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from Brain import db
-from Brain.lib import  build_redirect_url, crypt_referrer, delete_project_from_db
+from Brain.lib import  build_redirect_url, crypt_referrer, \
+                        delete_project_from_db, write_history
 from Brain.models import Task, Customer, Project, Partner
-from Brain.types import Type, Weekly
+from Brain.types import Type, Weekly, Model, Operation
 from Brain.tasks.forms import TaskForm
 from Brain.tasks.views import build_task
 from Brain.projects.forms import ProjectForm, ProjectInfoForm, RenameForm, \
@@ -54,10 +55,17 @@ def project(project_id):
     form.project.choices = [(p.id, p.name) for p in Project.query.all()]
 
     if form.validate_on_submit():
-        db.session.add(build_task(form))
+        task = build_task(form)
+        db.session.add(task)
         db.session.commit()
+        write_history(operation=Operation.Added,
+                        model=Model.Task,
+                        entity_id=task.id,
+                        customer_name=task.customer_name(),
+                        project_name=task.project_name(),
+                        comment=f"Added {task.type.name} for project '{task.project_name()}' of customer '{task.customer_name()}'")
 
-        flash('Task added', 'alert alert-success alert-dismissible fade show')
+        flash(f'{task.type.name} added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('projects.project', project_id=project_id))
 
     return render_template('/projects/project.html', tasks=tasks,
