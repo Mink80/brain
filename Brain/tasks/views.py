@@ -121,7 +121,7 @@ def delete(task_id):
                         project_name=to_delete.project_name(),
                         comment=f"Deleted {to_delete.type.name} of project '{to_delete.project_name()}' of the customer '{to_delete.customer_name()}'.")
 
-        flash('Task deleted', 'alert alert-warning alert-dismissible fade show')
+        flash(f'{to_delete.type.name} deleted', 'alert alert-warning alert-dismissible fade show')
     else:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
 
@@ -145,14 +145,15 @@ def delete_from_db(task_id):
                         customer_name=task_to_shredd.customer_name(),
                         project_name=task_to_shredd.project_name(),
                         comment=f"Shredded {task_to_shredd.type.name} of project '{task_to_shredd.project_name()}' of the customer '{task_to_shredd.customer_name()}'")
-        return(True)
+        return(task_to_shredd)
     return(False)
 
 
 @tasks_blueprint.route('/shredd/<task_id>')
 def shredd(task_id):
-    if delete_from_db(task_id):
-        flash('Task shredded', 'alert alert-warning alert-dismissible fade show')
+    task = delete_from_db(task_id)
+    if task:
+        flash(f'{task.type.name} shredded', 'alert alert-warning alert-dismissible fade show')
     else:
         flash('Task not found or task not marked as deleted', 'alert alert-danger alert-dismissible fade show')
     return(redirect(url_for('tasks.trash')))
@@ -173,7 +174,7 @@ def undelete(task_id):
                         customer_name=to_undelete.customer_name(),
                         project_name=to_undelete.project_name(),
                         comment=f"Undeleted {to_undelete.type.name} of project '{to_undelete.project_name()}' of customer: '{to_undelete.customer_name()}'")
-        flash('Task undeleted', 'alert alert-success alert-dismissible fade show')
+        flash(f'{to_undelete.type.name} undeleted', 'alert alert-success alert-dismissible fade show')
     else:
         flash('No such task', 'alert alert-danger alert-dismissible fade show')
 
