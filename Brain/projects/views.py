@@ -20,10 +20,17 @@ def index():
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
 
     if form.validate_on_submit():
-        db.session.add(Project(name=form.name.data,
-                                customer_id=form.customer.data))
+        project = Project(name=form.name.data, customer_id=form.customer.data)
+        db.session.add(project)
         db.session.commit()
 
+        write_history(operation=Operation.Added,
+                        model=Model.Project,
+                        entity_id=project.id,
+                        customer_name=project.customer_name(),
+                        project_name=project.name,
+                        comment=f"Added project '{project.name}' for customer '{project.customer_name()}'")
+                   
         flash('Project added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('projects.index'))
 
