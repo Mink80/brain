@@ -41,6 +41,11 @@ def short_date(longdate):
 
 app.jinja_env.filters['shortdate'] = short_date
 
+def short_time(longtime):
+    return(longtime.strftime("%d.%m.%y - %H:%M"))
+
+app.jinja_env.filters['shorttime'] = short_time
+
 # cryptography key generation
 key = Fernet.generate_key()
 crypter = Fernet(key)
