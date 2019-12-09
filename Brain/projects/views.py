@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from Brain import db
 from Brain.lib import  build_redirect_url, crypt_referrer, \
-                        delete_project_from_db, write_history
+                        delete_project_from_db, write_history, \
+                        project_rename_changes, project_changes
 from Brain.models import Task, Customer, Project, Partner
 from Brain.types import Type, Weekly, Model, Operation
 from Brain.tasks.forms import TaskForm
@@ -30,7 +31,7 @@ def index():
                         customer_name=project.customer_name(),
                         project_name=project.name,
                         comment=f"Added project '{project.name}' for customer '{project.customer_name()}'")
-                   
+
         flash('Project added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('projects.index'))
 
@@ -96,13 +97,29 @@ def edit(project_id):
     project_info_form.partner.choices.extend([(p.id, p.name) for p in Partner.query.all()])
 
     if project_info_form.validate_on_submit():
-        project.opp = project_info_form.opp_number.data
-        # partner == 0 means "None", so no write into the database
-        if project_info_form.partner.data != 0:
-            project.partner_id = project_info_form.partner.data
-        project.notes = project_info_form.notes.data
-        db.session.add(project)
-        db.session.commit()
+
+        changes = project_changes(project, project_info_form)
+
+        if changes and len(changes) > 0:
+            project.opp = project_info_form.opp_number.data
+
+            if project_info_form.partner.data == 0:
+                project.partner_id = None
+            else:
+                project.partner_id = project_info_form.partner.data
+
+            project.notes = project_info_form.notes.data
+
+            db.session.add(project)
+            db.session.commit()
+
+            write_history(operation=Operation.Changed,
+                            model=Model.Project,
+                            entity_id=project.id,
+                            customer_name=project.customer_name(),
+                            project_name=project.name,
+                            comment=f"Changed project '{project.name}' of customer '{project.customer_name()}': {changes}")
+
         return redirect(url_for('projects.project', project_id=project.id))
 
     return render_template('/projects/project.html', tasks=tasks,
@@ -131,9 +148,22 @@ def rename(project_id):
             to_rename.partner_id = form.partner.data
         else:
             to_rename.partner_id = None
-        db.session.add(to_rename)
-        db.session.commit()
-        flash('Project edited', 'alert alert-success alert-dismissible fade show')
+            form.partner.data = None
+
+        changed = project_rename_changes(to_rename, form)
+
+        if changed and len(changed) > 1:
+            db.session.add(to_rename)
+            db.session.commit()
+
+            write_history(operation=Operation.Changed,
+                            model=Model.Project,
+                            entity_id=to_rename.id,
+                            customer_name=to_rename.customer_name(),
+                            project_name=to_rename.name,
+                            comment=f"Changed project '{to_rename.name}' of customer '{to_rename.customer_name()}': {changed}")
+
+            flash('Project edited', 'alert alert-success alert-dismissible fade show')
         return redirect(build_redirect_url(form.origin.data, 'projects.index'))
 
     all_customers = Customer.query.all()
@@ -161,7 +191,16 @@ def delete(project_id):
 
     # deletion was confirmed by user
     if confirm_delete.validate_on_submit() and confirm_delete.confirm.data:
-        if delete_project_from_db(to_delete):
+        tasks = delete_project_from_db(to_delete)
+
+        if tasks or tasks == 0:
+            write_history(operation=Operation.Deleted,
+                            model=Model.Project,
+                            entity_id=to_delete.id,
+                            customer_name=to_delete.customer_name(),
+                            project_name=to_delete.name,
+                            comment=f"Deleted project '{to_delete.name}' of customer '{to_delete.customer_name()}': {tasks} tasks deleted.")
+
             flash('Project deleted', 'alert alert-danger alert-dismissible fade show')
             return redirect(build_redirect_url(confirm_delete.origin.data, 'projects.index'))
         else:

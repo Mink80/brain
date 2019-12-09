@@ -37,16 +37,18 @@ def delete_project_from_db(project):
         return False
 
     # delete all tasks of the project
+    tasks = project.tasks.count()
     for t in project.tasks.all():
         db.session.delete(t)
 
-    # delete project_table
+    # delete project
     db.session.delete(project)
 
     # write changes to db
     db.session.commit()
 
-    return True
+    # return number of deleted tasks
+    return tasks
 
 
 def delete_customer_from_db(customer):
@@ -74,21 +76,53 @@ def task_changed(task, taskform, duedate):
     changed = ""
 
     if task.text != taskform.text.data:
-        changed = changed + "text "
+        changed += "text "
     if task.project_id != taskform.project.data:
-        changed = changed + "project "
+        changed += "project "
     if task.type != Type(taskform.type.data):
-        changed = changed + "type "
+        changed += "type "
     if task.duedate != duedate:
-        changed = changed + "duedate "
+        changed += "duedate "
     if task.weekly != Weekly(taskform.weekly.data):
         changed = changed + "weekly "
 
     return changed
 
 
-def project_changed():
-    pass
+def project_changes(project, project_info_form):
+    if not project or not project_info_form:
+        return False
+
+    changes = ""
+    if project.opp != int(project_info_form.opp_number.data):
+        changes += "opp "
+
+    if  not project.partner_id:
+        partner_id = 0
+    else:
+        partner_id = int(project.partner_id)
+
+    if partner_id != int(project_info_form.partner.data):
+        changes += "partner "
+
+    if project.notes != project_info_form.notes.data:
+        changes += "notes"
+
+    return changes
+
+
+# returns a string with changed fields (name, partner)
+# the renaming function includes a change partner option as well
+def project_rename_changes(project, rename_form):
+    if not project or not rename_form:
+        return False
+
+    changed = ""
+    if project.name != rename_form.new_name:
+        changed += "name "
+    if project.partner != rename_form.partner.data:
+        changed += "partner "
+    return changed
 
 
 def customer_changed():
