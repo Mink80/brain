@@ -9,18 +9,20 @@
   <br>
 
   {% if history_items %}
-    <div class="w-75 mx-auto">
+    <div class="w-100 mx-auto">
       <table class="table border-primary bg-light">
         <thead class="thead-light">
           <tr class="">
+            <th scope="col" style="width: 20%">Time</th>
             <th scope="col" style="width: 15%">Operation</th>
             <th scope="col" style="width: 15%">Model</th>
-            <th scope="col" style="width: 70%">Comment</th>
+            <th scope="col" style="width: 50%">Comment</th>
           </tr>
         </thead>
         <tbody>
           {% for h in history_items %}
             <tr>
+              <td>{{h.time|shorttime}}</td>
               <td>{{h.operation.name}}</td>
               <td>{{h.model.name}}</td>
               <td>{{h.comment}}</td>
