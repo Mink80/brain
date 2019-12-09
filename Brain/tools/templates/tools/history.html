@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="w-100 p-5 small mx-auto">
+  <h5>History</h5>
+  <h6>Last 50 changes</h6>
+
+  <br>
+
+  {% if history_items %}
+    <div class="w-75 mx-auto">
+
+
+    <table class="table border-primary bg-light">
+      <thead class="thead-light">
+        <tr class="">
+          <th scope="col" style="width: 15%">Operation</th>
+          <th scope="col" style="width: 15%">Model</th>
+          <th scope="col" style="width: 70%">Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in history_items %}
+          <tr>
+            <td>{{h.operation.name}}</td>
+            <td>{{h.model.name}}</td>
+            <td>{{h.comment}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
