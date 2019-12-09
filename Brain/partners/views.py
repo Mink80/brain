@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from Brain import db
-from Brain.models import Partner
+from Brain.models import Partner, Operation, Model
+from Brain.lib import write_history, partner_changes
 from Brain.partners.forms import PartnerForm
+
 
 partners_blueprint = Blueprint('partners', __name__,
                             template_folder='templates')
@@ -17,6 +19,14 @@ def index():
                           comment=form.comment.data)
         db.session.add(partner)
         db.session.commit()
+
+        write_history(operation=Operation.Added,
+                        model=Model.Partner,
+                        entity_id=partner.id,
+                        customer_name=None,
+                        project_name=None,
+                        comment=f"Added partner '{partner.name}'")
+
         return redirect(url_for('partners.index'))
 
     return render_template("/partners/list.html", partners=all_partners,
@@ -33,11 +43,23 @@ def edit(partner_id):
                         edit_id=to_edit.id)
 
     if form.validate_on_submit():
-        to_edit.name = form.name.data
-        to_edit.comment = form.comment.data
-        db.session.add(to_edit)
-        db.session.commit()
-        flash('Partner edited', 'alert alert-success alert-dismissible fade show')
+        changes = partner_changes(to_edit, form)
+
+        if changes:
+            to_edit.name = form.name.data
+            to_edit.comment = form.comment.data
+            db.session.add(to_edit)
+            db.session.commit()
+
+            write_history(operation=Operation.Changed,
+                            model=Model.Partner,
+                            entity_id=to_edit.id,
+                            customer_name=None,
+                            project_name=None,
+                            comment=f"Changed partner '{to_edit.name}': {changes}")
+
+            flash('Partner edited', 'alert alert-success alert-dismissible fade show')
+
         return redirect(url_for('partners.index'))
 
     partners = Partner.query.all()
@@ -55,6 +77,15 @@ def delete(partner_id):
     if to_delete.projects.count() == 0:
         db.session.delete(to_delete)
         db.session.commit()
+        write_history(operation=Operation.Deleted,
+                        model=Model.Partner,
+                        entity_id=to_delete.id,
+                        customer_name=None,
+                        project_name=None,
+                        comment=f"Deleted partner '{to_delete.name}'")
+
+        flash('partner deleted', 'alert alert-warning alert-dismissible fade show')
+
     else:
         flash('This partners has assigned projects', 'alert alert-danger alert-dismissible fade show')
 

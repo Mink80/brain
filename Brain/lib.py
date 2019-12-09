@@ -143,5 +143,15 @@ def customer_changes(customer, customer_form):
     return changes
 
 
-def partner_changed():
-    pass
+def partner_changes(partner, partner_form):
+    if not partner or not partner_form:
+        return False
+
+    changes = ""
+
+    if partner.name != partner_form.name.data:
+        changes += "name "
+    if partner.comment != partner_form.comment.data:
+        changes += "comment "
+
+    return changes
