@@ -15,23 +15,26 @@ projects_blueprint = Blueprint('projects', __name__,
                                 template_folder='templates')
 
 
+def add_project_and_write_history(project_form):
+    project = Project(name=project_form.name.data, customer_id=project_form.customer.data)
+    db.session.add(project)
+    db.session.commit()
+
+    write_history(operation=Operation.Added,
+                    model=Model.Project,
+                    entity_id=project.id,
+                    customer_name=project.customer_name(),
+                    project_name=project.name,
+                    comment=f"Added project '{project.name}' for customer '{project.customer_name()}'")
+
+
 @projects_blueprint.route('/', methods=['GET','POST'])
 def index():
     form = ProjectForm()
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
 
     if form.validate_on_submit():
-        project = Project(name=form.name.data, customer_id=form.customer.data)
-        db.session.add(project)
-        db.session.commit()
-
-        write_history(operation=Operation.Added,
-                        model=Model.Project,
-                        entity_id=project.id,
-                        customer_name=project.customer_name(),
-                        project_name=project.name,
-                        comment=f"Added project '{project.name}' for customer '{project.customer_name()}'")
-
+        add_project_and_write_history(form)
         flash('Project added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('projects.index'))
 

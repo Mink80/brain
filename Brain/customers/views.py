@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from Brain import db
-from Brain.lib import delete_customer_from_db
-from Brain.models import Customer, Project, Task
+from Brain.lib import delete_customer_from_db, write_history, customer_changes
+from Brain.models import Customer, Project, Task, Operation, Model
 from Brain.customers.forms import CustomerForm, ConfirmDelete, CancelDelete
 from Brain.projects.forms import ProjectForm
+from Brain.projects.views import add_project_and_write_history
 
 
 customers_blueprint = Blueprint('customers', __name__,
@@ -24,6 +25,14 @@ def index():
 
         # Add "Misc" Project for the new customer and commit it as well
         project = Project(name="Misc", customer_id=customer.id)
+
+        write_history(operation=Operation.Added,
+                        model=Model.Customer,
+                        entity_id=customer.id,
+                        customer_name=customer.name,
+                        project_name=None,
+                        comment=f"Added customer '{customer.name}'")
+
         db.session.add(project)
         db.session.commit()
 
@@ -43,10 +52,7 @@ def customer(customer_id):
     form.customer.choices = [(c.id, c.name) for c in Customer.query.all()]
 
     if form.validate_on_submit():
-        db.session.add(Project(name=form.name.data,
-                                customer_id=form.customer.data))
-        db.session.commit()
-
+        add_project_and_write_history(form)
         flash('Project added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('customers.customer', customer_id=customer_id))
 
@@ -75,13 +81,24 @@ def edit(customer_id):
     form.submit.label.text = "Save"
 
     if form.validate_on_submit():
-        customer_to_edit.name = form.name.data
-        customer_to_edit.comment = form.comment.data
+        changes = customer_changes(customer_to_edit, form)
 
-        db.session.add(customer_to_edit)
-        db.session.commit()
+        if changes:
+            customer_to_edit.name = form.name.data
+            customer_to_edit.comment = form.comment.data
 
-        flash('Customer saved', 'alert alert-success alert-dismissible fade show')
+            write_history(operation=Operation.Changed,
+                            model=Model.Customer,
+                            entity_id=customer_to_edit.id,
+                            customer_name=customer_to_edit.name,
+                            project_name=None,
+                            comment=f"Changed customer '{customer_to_edit.name}': {changes}")
+
+            db.session.add(customer_to_edit)
+            db.session.commit()
+
+            flash('Customer saved', 'alert alert-success alert-dismissible fade show')
+
         return redirect(url_for('customers.index'))
 
     else:
@@ -89,6 +106,20 @@ def edit(customer_id):
         return render_template('/customers/edit.html', form=form,
                                                         edit_id=customer_to_edit.id,
                                                         customers=customers)
+
+def write_log_and_delete_customer(customer):
+    projects_and_tasks = delete_customer_from_db(customer)
+    if projects_and_tasks:
+
+        write_history(operation=Operation.Deleted,
+                        model=Model.Customer,
+                        entity_id=customer.id,
+                        customer_name=customer.name,
+                        project_name=None,
+                        comment=f"Deleted customer '{customer.name}' with {projects_and_tasks[0]} projects and {projects_and_tasks[1]} tasks.")
+        return True
+    else:
+        return False
 
 
 @customers_blueprint.route('/delete/<customer_id>', methods=['GET', 'POST'])
@@ -104,7 +135,7 @@ def delete(customer_id):
         return redirect(url_for('customers.index'))
 
     if confirm_delete.validate_on_submit() and confirm_delete.confirm.data:
-        if delete_customer_from_db(to_delete):
+        if write_log_and_delete_customer(to_delete):
             flash('Customer deleted', 'alert alert-danger alert-dismissible fade show')
             return redirect(url_for('customers.index'))
         else:
@@ -133,6 +164,8 @@ def delete(customer_id):
                                                                 confirm_delete=confirm_delete,
                                                                 cancel_delete=cancel_delete )
     else:
-        if delete_customer_from_db(to_delete):
+        if write_log_and_delete_customer(to_delete):
             flash('Customer deleted', 'alert alert-danger alert-dismissible fade show')
             return redirect(url_for('customers.index'))
+        else:
+            return render_template('400.html'), 400

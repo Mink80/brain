@@ -56,9 +56,12 @@ def delete_customer_from_db(customer):
     if not customer:
         return False
 
+    projects = customer.projects.count()
+    tasks = 0
+
     # delete projects
     for p in customer.projects.all():
-        delete_project_from_db(p)
+        tasks += delete_project_from_db(p)
 
     # delete customer
     db.session.delete(customer)
@@ -66,7 +69,7 @@ def delete_customer_from_db(customer):
     # commit to db
     db.session.commit()
 
-    return(True)
+    return [projects,tasks]
 
 # returns a string with changed fields separated with a space
 def task_changed(task, taskform, duedate):
@@ -125,8 +128,19 @@ def project_rename_changes(project, rename_form):
     return changed
 
 
-def customer_changed():
-    pass
+def customer_changes(customer, customer_form):
+    if not customer or not customer_form:
+        return False
+
+    changes = ""
+
+    if customer.name != customer_form.name.data:
+        changes += "name "
+
+    if customer.comment != customer_form.comment.data:
+        changes += "comment "
+
+    return changes
 
 
 def partner_changed():
