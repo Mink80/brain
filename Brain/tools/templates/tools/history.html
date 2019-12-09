@@ -10,28 +10,29 @@
 
   {% if history_items %}
     <div class="w-75 mx-auto">
-
-
-    <table class="table border-primary bg-light">
-      <thead class="thead-light">
-        <tr class="">
-          <th scope="col" style="width: 15%">Operation</th>
-          <th scope="col" style="width: 15%">Model</th>
-          <th scope="col" style="width: 70%">Comment</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for h in history_items %}
-          <tr>
-            <td>{{h.operation.name}}</td>
-            <td>{{h.model.name}}</td>
-            <td>{{h.comment}}</td>
+      <table class="table border-primary bg-light">
+        <thead class="thead-light">
+          <tr class="">
+            <th scope="col" style="width: 15%">Operation</th>
+            <th scope="col" style="width: 15%">Model</th>
+            <th scope="col" style="width: 70%">Comment</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          {% for h in history_items %}
+            <tr>
+              <td>{{h.operation.name}}</td>
+              <td>{{h.model.name}}</td>
+              <td>{{h.comment}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    No items in history.
   {% endif %}
+
 </div>
 
 {% endblock %}
