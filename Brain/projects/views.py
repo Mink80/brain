@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from Brain import db
-from Brain.lib import  build_redirect_url, crypt_referrer, \
-                        delete_project_from_db, write_history, \
-                        project_rename_changes, project_changes
+from Brain.lib import  build_redirect_url, crypt_referrer, delete_project_from_db, \
+                        write_history, project_rename_changes, project_changes, \
+                        add_project_and_write_history
 from Brain.models import Task, Customer, Project, Partner
 from Brain.types import Type, Weekly, Model, Operation
 from Brain.tasks.forms import TaskForm
@@ -14,18 +14,6 @@ import re
 projects_blueprint = Blueprint('projects', __name__,
                                 template_folder='templates')
 
-
-def add_project_and_write_history(project_form):
-    project = Project(name=project_form.name.data, customer_id=project_form.customer.data)
-    db.session.add(project)
-    db.session.commit()
-
-    write_history(operation=Operation.Added,
-                    model=Model.Project,
-                    entity_id=project.id,
-                    customer_name=project.customer_name(),
-                    project_name=project.name,
-                    comment=f"Added project '{project.name}' for customer '{project.customer_name()}'")
 
 
 @projects_blueprint.route('/', methods=['GET','POST'])

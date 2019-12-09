@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from Brain import db
-from Brain.lib import delete_customer_from_db, write_history, customer_changes
+from Brain.lib import write_history, customer_changes, write_log_and_delete_customer
 from Brain.models import Customer, Project, Task, Operation, Model
 from Brain.customers.forms import CustomerForm, ConfirmDelete, CancelDelete
 from Brain.projects.forms import ProjectForm
@@ -106,20 +106,6 @@ def edit(customer_id):
         return render_template('/customers/edit.html', form=form,
                                                         edit_id=customer_to_edit.id,
                                                         customers=customers)
-
-def write_log_and_delete_customer(customer):
-    projects_and_tasks = delete_customer_from_db(customer)
-    if projects_and_tasks:
-
-        write_history(operation=Operation.Deleted,
-                        model=Model.Customer,
-                        entity_id=customer.id,
-                        customer_name=customer.name,
-                        project_name=None,
-                        comment=f"Deleted customer '{customer.name}' with {projects_and_tasks[0]} projects and {projects_and_tasks[1]} tasks.")
-        return True
-    else:
-        return False
 
 
 @customers_blueprint.route('/delete/<customer_id>', methods=['GET', 'POST'])

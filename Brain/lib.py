@@ -1,6 +1,6 @@
 from flask import url_for
 from Brain import db, crypter
-from Brain.models import Task, HistoryItem, Type, Weekly
+from Brain.models import Task, Project, HistoryItem, Type, Weekly, Operation, Model
 from Brain.tasks.forms import TaskForm
 
 # expects a crypted url in origin
@@ -30,6 +30,19 @@ def write_history(operation, model, entity_id, customer_name=None,
                                 project_name, comment)
     db.session.add(history_item)
     db.session.commit()
+
+
+def add_project_and_write_history(project_form):
+    project = Project(name=project_form.name.data, customer_id=project_form.customer.data)
+    db.session.add(project)
+    db.session.commit()
+
+    write_history(operation=Operation.Added,
+                    model=Model.Project,
+                    entity_id=project.id,
+                    customer_name=project.customer_name(),
+                    project_name=project.name,
+                    comment=f"Added project '{project.name}' for customer '{project.customer_name()}'")
 
 
 def delete_project_from_db(project):
@@ -70,6 +83,22 @@ def delete_customer_from_db(customer):
     db.session.commit()
 
     return [projects,tasks]
+
+
+def write_log_and_delete_customer(customer):
+    projects_and_tasks = delete_customer_from_db(customer)
+    if projects_and_tasks:
+
+        write_history(operation=Operation.Deleted,
+                        model=Model.Customer,
+                        entity_id=customer.id,
+                        customer_name=customer.name,
+                        project_name=None,
+                        comment=f"Deleted customer '{customer.name}' with {projects_and_tasks[0]} projects and {projects_and_tasks[1]} tasks.")
+        return True
+    else:
+        return False
+
 
 # returns a string with changed fields separated with a space
 def task_changed(task, taskform, duedate):
