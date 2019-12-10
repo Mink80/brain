@@ -6,5 +6,5 @@ tools_blueprint = Blueprint('tools',__name__,
 
 @tools_blueprint.route('/history')
 def history():
-    history_items = HistoryItem.query.order_by(HistoryItem.id.desc()).limit(25)
+    history_items = HistoryItem.query.order_by(HistoryItem.id.desc()).limit(25).all()
     return render_template('/tools/history.html', history_items=history_items)
