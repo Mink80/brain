@@ -29,7 +29,7 @@
 
   </head>
   <body>
-    <nav class="navbar navbar-expand navbar-light bg-light fixed-top">
+    <nav class="navbar navbar-expand navbar-light bg-light fixed-top border">
 
       <a class="navbar-brand" href="{{ url_for("index") }}"><img src="{{url_for('static', filename='brain.png')}}" width="30" height="30" alt="Brain!"></a>
 
@@ -65,7 +65,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="{{url_for('tools.history')}}">History</a>
-              <a class="dropdown-item" href="#">Weekly</a>
+              <a class="dropdown-item" href="{{url_for('tools.weekly')}}">Weekly</a>
               <a class="dropdown-item" href="#">Automated Tasks</a>
             </div>
           </li>

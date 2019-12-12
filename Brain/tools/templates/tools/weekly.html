@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="w-100 p-5 mx-auto">
+  <h5>Weekly</h5>
+  <h6>Year {{year}}, week {{week}}</h6>
+  <div class="small">
+    Start Date {{first_day}}
+    <br>
+    End Date {{last_day}}
+  </div>
+
+  <br><br>
+
+  <div class="container mx-auto w-75 p-0">
+    <div class="row mx-auto w-100 p-0">
+
+      <div class="col border mx-auto w-100 p-0" style="height: 300px;">
+        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+          <h6>&nbsp;Highlights</h6>
+        </div>
+        <div>
+          <ul>
+            {% for i in highlights %}
+              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="col border mx-auto w-100 p-0">
+        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+          <h6>&nbsp;Lowlights</h6>
+        </div>
+        <div>
+          <ul>
+            {% for i in lowlights %}
+              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="w-100"></div>
+
+      <div class="col border mx-auto w-100 p-0" style="height: 300px;">
+        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+          <h6>&nbsp;General Updates</h6>
+        </div>
+        <div>
+          <ul>
+            {% for i in general %}
+              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="col border mx-auto w-100 p-0">
+        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+          <h6>&nbsp;Upcoming</h6>
+        </div>
+        <div>
+          <ul>
+            {% for i in upcoming %}
+              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <!-- Navigation arrows through the weeks -->
+    <div class="container mx-auto w-100 p-0">
+      <div class="row mx-auto w-100 p-0">
+        <div class="col mx-auto w-100 p-0 text-left">
+          {% if not (week == 1 and year == 2019) %}
+            <a class="text-decoration-none" href="{{prev_url}}">
+              <img src="{{url_for('static', filename='arrow_left.png')}}">
+              previous
+            </a>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+        <div class="col mx-auto w-100 p-0 text-right">
+          {% if not (week == max_weeks and year == max_year) %}
+            <a class="text-decoration-none" href="{{next_url}}">
+              next
+              <img src="{{url_for('static', filename='arrow_right.png')}}">
+            </a>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
