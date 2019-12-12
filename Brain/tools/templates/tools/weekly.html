@@ -1,3 +1,5 @@
+{% from 'tools/macros.html' import ouput_task_as_list_element %}
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -23,7 +25,7 @@
         <div>
           <ul>
             {% for i in highlights %}
-              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+              {{ ouput_task_as_list_element(task=i) }}
             {% endfor %}
           </ul>
         </div>
@@ -36,7 +38,7 @@
         <div>
           <ul>
             {% for i in lowlights %}
-              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+              {{ ouput_task_as_list_element(task=i) }}
             {% endfor %}
           </ul>
         </div>
@@ -51,7 +53,7 @@
         <div>
           <ul>
             {% for i in general %}
-              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+              {{ ouput_task_as_list_element(task=i) }}
             {% endfor %}
           </ul>
         </div>
@@ -64,7 +66,7 @@
         <div>
           <ul>
             {% for i in upcoming %}
-              <li>{{i.project_name()}} ({{i.customer_name()}}): {{i.text}}</li>
+              {{ ouput_task_as_list_element(task=i) }}
             {% endfor %}
           </ul>
         </div>
