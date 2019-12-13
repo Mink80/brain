@@ -11,7 +11,9 @@
     {% include "flash_message.html" %}
     {% include "flash_error_message.html" %}
 
-    {% include "projects_table.html" %}
+    {% if projects %}
+      {% include "projects_table.html" %}
+    {% endif %}
 
     <br>
 
@@ -20,7 +22,7 @@
         {% include "add_project.html" %}
       {% else %}
         <img width="30" height="30" src="{{url_for('static', filename='attention.png')}}">
-        You need to create a customer before you can add projects.          
+        You need to create a customer before you can add projects.
       {% endif %}
     {% endif %}
 
