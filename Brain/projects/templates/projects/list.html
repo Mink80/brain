@@ -16,7 +16,12 @@
     <br>
 
     {% if not rename_id %}
-      {% include "add_project.html" %}
+      {% if customer_count > 0 %}
+        {% include "add_project.html" %}
+      {% else %}
+        <img width="30" height="30" src="{{url_for('static', filename='attention.png')}}">
+        You need to create a customer before you can add projects.          
+      {% endif %}
     {% endif %}
 
   </div>

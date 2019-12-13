@@ -76,7 +76,8 @@ def index():
         flash(f'{task.type.name} added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.index'))
 
-    return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Tasks")
+    return render_template('/tasks/list.html', tasks=tasks, form=form,
+                                                headline="Tasks", customer_count=len(Customer.query.all()))
 
 
 @tasks_blueprint.route('/open', methods=['GET','POST'])
@@ -91,7 +92,7 @@ def open():
         flash(f'{task.type.name} added', 'alert alert-success alert-dismissible fade show')
         return redirect(url_for('tasks.open'))
 
-    return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Open Tasks")
+    return render_template('/tasks/list.html', tasks=tasks, form=form, headline="Open Tasks", customer_count=len(Customer.query.all()))
 
 
 @tasks_blueprint.route('/done/<task_id>', methods=['POST', 'GET'])

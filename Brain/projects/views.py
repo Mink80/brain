@@ -53,7 +53,8 @@ def index():
 
     return render_template('/projects/list.html', headline="Projects",
                                                     projects=projects,
-                                                    form=form)
+                                                    form=form,
+                                                    customer_count=len(Customer.query.all()))
 
 
 @projects_blueprint.route('/<project_id>', methods=['GET','POST'])

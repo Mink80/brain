@@ -18,8 +18,12 @@
   <hr>
 
   <br>
-
-  {% include "add_task.html" %}
+  {% if customer_count > 0 %}
+    {% include "add_task.html" %}
+  {% else %}
+      <img width="30" height="30" src="{{url_for('static', filename='attention.png')}}">
+    You need to create a customer before you can add tasks.
+  {% endif %}
 
 </div>
 
