@@ -163,7 +163,7 @@ def delete(customer_id):
 
     if (len(projects) > 1 or len(tasks) > 0):
         return render_template("/customers/confirm_delete.html", projects=projects,
-                                                                no_actions_in_projcttable=True,
+                                                                no_actions_in_projecttable=True,
                                                                 customer=to_delete,
                                                                 deleted_tasks=deleted_tasks,
                                                                 confirm_delete=confirm_delete,

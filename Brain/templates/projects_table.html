@@ -53,7 +53,7 @@
         <td>{{ p.infos()| length }}</td>
         <td>{{ p.open_tasks()| length }}</td>
         <td>{{ p.requests()| length }}</td>
-        {% if not no_actions_in_projcttable %}
+        {% if not no_actions_in_projecttable %}
           <td>
             {% if rename_id and rename_id == p.id %}
               {{ form.submit_rename(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}
