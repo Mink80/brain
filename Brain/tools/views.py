@@ -62,7 +62,8 @@ def search():
 
     return render_template('/tools/search_results.html',
                             search_string=search_string,
-                            tasks=tasks)
+                            tasks=tasks,
+                            no_actions_in_tasktable=True)
 
 
 @tools_blueprint.route('/history')
