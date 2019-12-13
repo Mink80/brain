@@ -17,22 +17,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from Brain import app
-from flask import render_template, request
+from flask import render_template
 from Brain.models import Task
 
 @app.route('/')
 def index():
     return render_template('home.html')
-
-@app.route('/search', methods=['POST', 'GET'])
-def search():
-    search_string = request.form.get('Search', "")
-
-    tasks = Task.query.filter(Task.text.like("%{}%".format(search_string))).all()
-
-    return render_template('search_results.html',
-                            search_string=search_string,
-                            tasks=tasks)
 
 @app.errorhandler(404)
 def page_not_found(e):

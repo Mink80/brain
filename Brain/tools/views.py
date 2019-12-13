@@ -17,7 +17,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Blueprint, render_template, url_for
+from flask import Blueprint, render_template, url_for, request
 from Brain.models import HistoryItem, Task
 from Brain.types import Weekly
 from datetime import date, datetime, timedelta
@@ -52,6 +52,17 @@ def number_of_prev_week(date):
 
 def year_of_prev_week(date):
     return (date - timedelta(days=7)).year
+
+
+@tools_blueprint.route('/search', methods=['POST', 'GET'])
+def search():
+    search_string = request.form.get('Search', "")
+
+    tasks = Task.query.filter(Task.text.like("%{}%".format(search_string))).all()
+
+    return render_template('/tools/search_results.html',
+                            search_string=search_string,
+                            tasks=tasks)
 
 
 @tools_blueprint.route('/history')
