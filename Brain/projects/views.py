@@ -148,7 +148,8 @@ def rename(project_id):
 
     form = RenameForm(new_name = to_rename.name,
                         partner = to_rename.partner_id,
-                        origin = crypt_referrer(request.referrer))
+                        origin = crypt_referrer(request.referrer),
+                        edit_id = to_rename.id)
 
     form.partner.choices = [(0, "None")]
     form.partner.choices.extend([(p.id, p.name) for p in Partner.query.all()])

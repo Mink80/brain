@@ -21,6 +21,7 @@ from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired
 from Brain.models import Customer
+import re
 
 class CustomerForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()],
@@ -28,8 +29,18 @@ class CustomerForm(FlaskForm):
 
     def validate_name(form, field):
         c = Customer.query.filter_by(name=field.data).first()
-        if c and (not int(c.id) == int(form.edit_id.data)):
-            raise ValidationError('A customer with that name already exists')
+
+        # if a customer with that name exist in the db
+        if c:
+            # validate user input
+            # and are we in an editing process of the queried customer?
+            if isinstance(form.edit_id.data, str) and \
+                re.search("^\d+$", form.edit_id.data) and \
+                c.id == int(form.edit_id.data):
+                    # save exit without raising an validation error
+                    pass
+            else:
+                raise ValidationError('A customer with that name already exists')
 
     comment = StringField("Comment", render_kw={"placeholder": "Comment (optional)"})
     # this is used by the validator above to check if we are in an editing process

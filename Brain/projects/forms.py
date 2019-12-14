@@ -26,13 +26,13 @@ class ProjectForm(FlaskForm):
     customer = SelectField(u'Customer', coerce=int)
     name = StringField("Name", validators=[DataRequired()],
                                 render_kw={"placeholder": "Project Name"})
+    submit = SubmitField("Add")
 
     def validate_name(form, field):
-        if (Project.query.filter_by(name=field.data). \
-                            filter_by(customer_id=form.customer.data).first()):
+        p = Project.query.filter_by(name=field.data). \
+                            filter_by(customer_id=form.customer.data).first()
+        if p:
             raise ValidationError('A project with that name already exists for this customer')
-
-    submit = SubmitField("Add")
 
 
 class ProjectInfoForm(FlaskForm):
@@ -46,7 +46,23 @@ class RenameForm(FlaskForm):
     new_name = TextField('New Name', validators=[DataRequired()])
     partner = SelectField(u'Partner', coerce=int)
     origin = HiddenField()
+    edit_id = HiddenField()
     submit_rename = SubmitField("Save")
+
+    def validate_name(form, field):
+        p = Project.query.filter_by(name=field.data). \
+                            filter_by(customer_id=form.customer.data).first()
+        if p:
+            # validate user input
+            # and are we in an editing process of the queried customer?
+            if isinstance(form.edit_id.data, str) and \
+                re.search("^\d+$", form.edit_id.data) and \
+                p.id == int(form.edit_id.data):
+                    # save exit without raising an validation error
+                    pass
+            else:
+                raise ValidationError('A project with that name already exists for this customer')
+
 
 class ConfirmDelete(FlaskForm):
     origin = HiddenField()
