@@ -15,60 +15,62 @@
 
   <br><br>
 
-  <div class="container mx-auto w-75 p-0">
-    <div class="row mx-auto w-100 p-0">
+  <div class="container mx-auto w-75 ">
+    <div class="shadow bg-white rounded">
+      <div class="row mx-auto w-100 p-0">
 
-      <div class="col border mx-auto w-100 p-0" style="height: 300px;">
-        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
-          <h6>&nbsp;Highlights</h6>
+        <div class="col border mx-auto w-100 p-0" style="height: 300px;">
+          <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+            <h6>&nbsp;Highlights</h6>
+          </div>
+          <div>
+            <ul>
+              {% for i in highlights %}
+                {{ ouput_task_as_list_element(task=i) }}
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-        <div>
-          <ul>
-            {% for i in highlights %}
-              {{ ouput_task_as_list_element(task=i) }}
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
 
-      <div class="col border mx-auto w-100 p-0">
-        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
-          <h6>&nbsp;Lowlights</h6>
+        <div class="col border mx-auto w-100 p-0">
+          <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+            <h6>&nbsp;Lowlights</h6>
+          </div>
+          <div>
+            <ul>
+              {% for i in lowlights %}
+                {{ ouput_task_as_list_element(task=i) }}
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-        <div>
-          <ul>
-            {% for i in lowlights %}
-              {{ ouput_task_as_list_element(task=i) }}
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
 
-      <div class="w-100"></div>
+        <div class="w-100"></div>
 
-      <div class="col border mx-auto w-100 p-0" style="height: 300px;">
-        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
-          <h6>&nbsp;General Updates</h6>
+        <div class="col border mx-auto w-100 p-0" style="height: 300px;">
+          <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+            <h6>&nbsp;General Updates</h6>
+          </div>
+          <div>
+            <ul>
+              {% for i in general %}
+                {{ ouput_task_as_list_element(task=i) }}
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-        <div>
-          <ul>
-            {% for i in general %}
-              {{ ouput_task_as_list_element(task=i) }}
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
 
-      <div class="col border mx-auto w-100 p-0">
-        <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
-          <h6>&nbsp;Upcoming</h6>
-        </div>
-        <div>
-          <ul>
-            {% for i in upcoming %}
-              {{ ouput_task_as_list_element(task=i) }}
-            {% endfor %}
-          </ul>
+        <div class="col border mx-auto w-100 p-0">
+          <div class="mx-auto mx-auto w-100" style="background-color: #eee;">
+            <h6>&nbsp;Upcoming</h6>
+          </div>
+          <div>
+            <ul>
+              {% for i in upcoming %}
+                {{ ouput_task_as_list_element(task=i) }}
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
