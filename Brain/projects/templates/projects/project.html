@@ -49,86 +49,86 @@
       {% include "flash_error_message.html" %}
     {% endif %}
 
-    <div class="bglight shadow bg-white rounded p-3">
+
       {% if not project.name == "Misc" %}
-        <div class="row">
-          <div class="col">
-            <h5>General information</h5>
+        <div class="bglight shadow bg-white rounded p-3">
+          <div class="row">
+            <div class="col">
+              <h5>General information</h5>
+            </div>
+            <div class="col text-right">
+              {% if edit_info %}
+                {{ project_info_form.submit_project_info(class="btn btn-sm btn-outline-primary") }}
+                <a href="{{url_for('projects.project', project_id=project.id)}}" class="btn btn-sm btn-outline-secondary" role="button">
+                  Cancel
+                </a>
+              {% elif not delete_confirmation %}
+                <a href="{{url_for('projects.edit', project_id=project.id)}}" class="btn btn-sm btn-outline-primary" role="button">
+                  Edit
+                </a>
+              {% else %}
+                &nbsp;
+              {% endif %}
+            </div>
           </div>
-          <div class="col text-right">
+
+          <hr>
+          <p>
             {% if edit_info %}
-              {{ project_info_form.submit_project_info(class="btn btn-sm btn-outline-primary") }}
-              <a href="{{url_for('projects.project', project_id=project.id)}}" class="btn btn-sm btn-outline-secondary" role="button">
-                Cancel
-              </a>
-            {% elif not delete_confirmation %}
-              <a href="{{url_for('projects.edit', project_id=project.id)}}" class="btn btn-sm btn-outline-primary" role="button">
-                Edit
-              </a>
+              <table class="">
+                <tr>
+                  <td> {{ project_info_form.opp_number.label}} </td>
+                  <td> {{ project_info_form.opp_number(class="form-control form-control-sm", autocomplete="off") }} </td>
+                </tr>
+                <tr>
+                  <td> {{ project_info_form.partner.label }} </td>
+                  <td> {{ project_info_form.partner(class="form-control form-control-sm") }} </td>
+                </tr>
+              </table>
             {% else %}
-              &nbsp;
+              Opportunity:
+              {% if not project.opp %}
+                not defined
+              {% else %}
+                {{ project.opp }}
+              {% endif %}
+              <br>
+              Partner:
+              {% if not project.partner_id %}
+                not defined
+              {% else %}
+                {{ project.partner_name() }}
+              {% endif %}
+            {% endif %}
+          </p>
+
+          <br>
+
+          <h6>Notes</h6>
+          <hr>
+
+          <div>
+            {% if edit_info %}
+              {{ project_info_form.notes(class="form-control form-control-sm", rows="10") }}
+            {% else %}
+              {% if not project.notes %}
+                None
+              {% else %}
+                <p>{{ project.notes|safe }}</p>
+              {% endif %}
             {% endif %}
           </div>
-        </div>
 
-        <hr>
-        <p>
           {% if edit_info %}
-            <table class="">
-              <tr>
-                <td> {{ project_info_form.opp_number.label}} </td>
-                <td> {{ project_info_form.opp_number(class="form-control form-control-sm", autocomplete="off") }} </td>
-              </tr>
-              <tr>
-                <td> {{ project_info_form.partner.label }} </td>
-                <td> {{ project_info_form.partner(class="form-control form-control-sm") }} </td>
-              </tr>
-            </table>
-          {% else %}
-            Opportunity:
-            {% if not project.opp %}
-              not defined
-            {% else %}
-              {{ project.opp }}
-            {% endif %}
-            <br>
-            Partner:
-            {% if not project.partner_id %}
-              not defined
-            {% else %}
-              {{ project.partner_name() }}
-            {% endif %}
+            </form>
           {% endif %}
-        </p>
 
-        <br>
-
-        <h6>Notes</h6>
-        <hr>
-
-        <div>
-          {% if edit_info %}
-            {{ project_info_form.notes(class="form-control form-control-sm", rows="10") }}
-          {% else %}
-            {% if not project.notes %}
-              None
-            {% else %}
-              <p>{{ project.notes|safe }}</p>
-            {% endif %}
-          {% endif %}
+          <br>
         </div>
-
-        {% if edit_info %}
-          </form>
-        {% endif %}
-
         <br>
-
       {% endif %}
 
-    </div>
-
-    <br><br>
+    <br>
 
     <h5>Tasks</h5>
     {% if tasks %}
