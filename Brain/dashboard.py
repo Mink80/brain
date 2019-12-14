@@ -36,6 +36,7 @@ def dashboard():
 
     return render_template('home.html', tasks_urgent=tasks_urgent,
                                         tasks_oldest=tasks_oldest,
+                                        no_actions_in_tasktable=True,
                                         history_items=history_items,
                                         short_history_table=True,
                                         tasks_count=tasks_count,

@@ -9,16 +9,26 @@
       <tr class="">
         <th scope="col" style="width: 10%">Customer</th>
         <th scope="col" style="width: 15%">Project</th>
-        <th scope="col" style="width: 30%">Text</th>
+
+        {% if not no_actions_in_tasktable  %}
+          <th scope="col" style="width: 30%">Text</th>
+        {% else %}
+          <th scope="col" style="width: 45%">Text</th>
+        {% endif %}
+
         <th scope="col" style="width: 10%">Type</th>
         <th scope="col" style="width: 10%">DueDate</th>
         <th scope="col" style="width: 10%">Weekly</th>
-        <th scope="col" style="width: 15%" class="text-left">Actions</th>
+
+        {% if not no_actions_in_tasktable  %}
+          <th scope="col" style="width: 15%" class="text-left">Actions</th>
+        {% endif %}
+
       </tr>
     </thead>
     <tbody>
       {% for t in tasks %}
-        {% if edit_id and t.id|int == edit_id|int %}
+        {% if not no_actions_in_tasktable and (edit_id and t.id|int == edit_id|int) %}
           <tr bgcolor="{{t.bgcolor()}}">
             <td>{{ form.customer(class="form-control form-control-sm") }}</td>
             <td>{{ form.project(class="form-control form-control-sm") }}</td>
@@ -74,8 +84,6 @@
                   </a>
                 {% endif %}
               </td>
-            {% else %}
-              <td>&nbsp;</td>
             {% endif %}
           </tr>
         {% endif %}
