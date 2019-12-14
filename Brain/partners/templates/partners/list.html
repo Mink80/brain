@@ -6,115 +6,120 @@
   {{ form.hidden_tag() }}
 {% endif %}
 
-<div class="w-100 p-5 small mx-auto">
-     <h5>Partners</h5>
-     <br>
+<div class="w-100 p-5 mx-auto small">
+  <h5>Partners</h5>
 
-     {% include "flash_message.html" %}
-     {% include "flash_error_message.html" %}
+  <div class="w-75 p-5 mx-auto">
 
-    {% if partners %}
-        <table class="table table-hover">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col" style="width: 30%">Name</th>
-                <th scope="col" style="width: 50%">Comment</th>
-                <th scope="col" style="width: 10%">Projects</th>
-                <th scope="col" style="width: 10%">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for p in partners %}
-                {% if edit_id and edit_id == p.id %}
-                  <tr>
-                    <td>{{ form.name(class="form-control form-control-sm") }}</td>
-                    <td>{{ form.comment(class="form-control form-control-sm") }}</td>
-                    <td>{{p.projects.count()}}</td>
-                    <td>{{ form.submit(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}</td>
-                  </tr>
-                {% else %}
-                  <tr>
-                    <td>{{p.name}}</td>
-                    <td>
-                      {% if p.comment != "" %}
-                        {{p.comment}}
-                      {% else %}
-                        -
-                      {% endif %}
-                      </td>
-                    <td>{{p.projects.count()}}</td>
-                    <td>
-                      <a href="{{url_for('partners.edit', partner_id=p.id)}}" title="Edit">
-                        <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
-                      </a>
-                      {% if p.projects.count() == 0 %}
-                        &nbsp;
-                        <a href="{{url_for('partners.delete', partner_id=p.id)}}" title="Delete">
-                          <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
+       {% include "flash_message.html" %}
+       {% include "flash_error_message.html" %}
+
+      {% if partners %}
+        <div class="shadow bg-white rounded">
+          <table class="table table-hover">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" style="width: 30%">Name</th>
+                  <th scope="col" style="width: 50%">Comment</th>
+                  <th scope="col" style="width: 10%">Projects</th>
+                  <th scope="col" style="width: 10%">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in partners %}
+                  {% if edit_id and edit_id == p.id %}
+                    <tr>
+                      <td>{{ form.name(class="form-control form-control-sm") }}</td>
+                      <td>{{ form.comment(class="form-control form-control-sm") }}</td>
+                      <td>{{p.projects.count()}}</td>
+                      <td>{{ form.submit(class="form-control form-control-sm btn btn-sm btn-outline-primary") }}</td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td>{{p.name}}</td>
+                      <td>
+                        {% if p.comment != "" %}
+                          {{p.comment}}
+                        {% else %}
+                          -
+                        {% endif %}
+                        </td>
+                      <td>{{p.projects.count()}}</td>
+                      <td>
+                        <a href="{{url_for('partners.edit', partner_id=p.id)}}" title="Edit">
+                          <img src="{{url_for('static', filename='edit.png')}}" width="16" height="16">
                         </a>
-                      {% endif %}
-                    </td>
-                  </tr>
-                {% endif %}
-              {% endfor %}
-            </tbody>
-        </table>
-        <hr>
-    {% else %}
-        No customers created yet.
-    {% endif %}
+                        {% if p.projects.count() == 0 %}
+                          &nbsp;
+                          <a href="{{url_for('partners.delete', partner_id=p.id)}}" title="Delete">
+                            <img src="{{url_for('static', filename='trash.png')}}" width="16" height="16">
+                          </a>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+          </table>
+        </div>
 
-    {% if edit_id %}
-      </form>
-    {% else %}
+      {% else %}
+          No customers created yet.
+      {% endif %}
 
-      <!-- focus on first input field in modal --->
-      <script charset="utf-8" type="text/javascript">
-        $('body').on('shown.bs.modal', '#addPartner', function () {
-          $('input:visible:enabled:first', this).focus();
-      })
-      </script>
+      {% if edit_id %}
+        </form>
+      {% else %}
 
-      <div class="text-right">
-        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#addPartner">
-          Add Partner
-        </button>
-      </div>
+        <!-- focus on first input field in modal --->
+        <script charset="utf-8" type="text/javascript">
+          $('body').on('shown.bs.modal', '#addPartner', function () {
+            $('input:visible:enabled:first', this).focus();
+        })
+        </script>
 
-      <!-- Modal: Add task -->
-      <div class="modal fade" id="addPartner" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-          <div class="modal-content">
-            <form method="POST">
-              {{ form.hidden_tag() }}
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Partner</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <table class="w-100">
-                  <tr>
-                    <td scope="col" style="width: 30%">
-                      {{ form.name(class="form-control form-control-sm", autocomplete="off") }}
-                    </td>
-                    <td scope="col" style="width: 70%">
-                      {{ form.comment(class="form-control form-control-sm", autocomplete="off") }}
-                    </td>
-                  </tr>
-                </table>
-              </div>
-              <div class="modal-footer">
-                {{ form.submit(class="form-control-sm btn btn-sm btn-primary") }}
-                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </form>
+        <br>
+
+        <div class="text-right">
+          <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#addPartner">
+            Add Partner
+          </button>
+        </div>
+
+        <!-- Modal: Add task -->
+        <div class="modal fade" id="addPartner" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+              <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add Partner</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <table class="w-100">
+                    <tr>
+                      <td scope="col" style="width: 30%">
+                        {{ form.name(class="form-control form-control-sm", autocomplete="off") }}
+                      </td>
+                      <td scope="col" style="width: 70%">
+                        {{ form.comment(class="form-control form-control-sm", autocomplete="off") }}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  {{ form.submit(class="form-control-sm btn btn-sm btn-primary") }}
+                  <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    {% endif %}
+      {% endif %}
 
+  </div>
 </div>
-
 {% endblock %}

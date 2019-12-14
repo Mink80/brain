@@ -12,7 +12,9 @@
     {% include "flash_error_message.html" %}
 
     {% if projects %}
-      {% include "projects_table.html" %}
+      <div class="shadow bg-white rounded">
+        {% include "projects_table.html" %}
+      </div>
     {% endif %}
 
     <br>

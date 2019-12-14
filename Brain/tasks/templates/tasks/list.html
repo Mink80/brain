@@ -13,9 +13,10 @@
 
   {% include "flash_message.html" %}
   {% include "flash_error_message.html" %}
-  {% include "tasks_table.html" %}
 
-  <hr>
+  <div class="shadow bg-white rounded">
+    {% include "tasks_table.html" %}
+  </div>
 
   <br>
   {% if customer_count > 0 %}

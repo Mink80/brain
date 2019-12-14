@@ -11,7 +11,11 @@
     {% include "flash_message.html" %}
     {% include "flash_error_message.html" %}
 
-    {% include "customer_table.html" %}
+    <div class="shadow bg-white rounded">
+      {% include "customer_table.html" %}
+    </div>
+
+    <br>
 
 <div class="text-right">
   <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#addCustomer">
