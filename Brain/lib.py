@@ -145,7 +145,16 @@ def project_changes(project, project_info_form):
         return False
 
     changes = ""
-    if project.opp != int(project_info_form.opp_number.data):
+
+    if not project.opp:
+        opp = 0
+    else:
+        opp = int(project.opp)
+
+    if not project_info_form.opp_number.data:
+        project_info_form.opp_number.data=0
+
+    if opp != int(project_info_form.opp_number.data):
         changes += "opp "
 
     if  not project.partner_id:
