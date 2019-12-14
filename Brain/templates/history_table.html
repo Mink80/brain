@@ -1,0 +1,31 @@
+{% if history_items %}
+  <table class="table border bg-light">
+    <thead class="thead-light">
+      <tr>
+        {% if not short_history_table %}
+          <th scope="col" style="width: 15%">Time</th>
+          <th scope="col" style="width: 10%">Operation</th>
+          <th scope="col" style="width: 10%">Model</th>
+          <th scope="col" style="width: 65%">Comment</th>
+        {% else %}
+          <th scope="col" style="width: 20%">Time</th>
+          <th scope="col" style="width: 80%">Comment</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in history_items %}
+        <tr>
+          <td>{{h.time|shorttime}}</td>
+          {% if not short_history_table %}
+            <td>{{h.operation.name}}</td>
+            <td>{{h.model.name}}</td>
+          {% endif %}
+          <td>{{h.comment}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  No items in history.
+{% endif %}

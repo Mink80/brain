@@ -4,13 +4,152 @@
 
   <br><br><br>
 
-  <div class="text-center p-3 border w-50 mx-auto">
+  <div class="text-center p-3 border w-50 mx-auto shadow bg-white rounded">
     <div class="card-body">
       <h5 class="card-title">Welcome to Brain!</h5>
       <h6 class="card-subtitle mb-2 text-muted">A lightweight task organizer</h6>
-      <p class="card-text">This project is in alpha status. Thanks to Bastian Schattling
-        for supporting this tool with testing.</p>
     </div>
   </div>
 
+  <br><br>
+
+  <div class="w-100 mx-auto small">
+    <div class="container">
+      {% include "flash_message.html" %}
+      <div class="row">
+        <div class="col">
+
+          <!-- Most urgent tasks -->
+          <div class="card shadow-sm bg-white rounded">
+            <div class="card-header font-weight-bold">
+              5 most urgent tasks
+            </div>
+            <div class="card-body">
+              {% set tasks=tasks_urgent %}
+              {% include "tasks_table.html" %}
+            </div>
+          </div>
+
+          <br><br>
+
+          <!-- Oldest Tasks and Requests without a due date -->
+          <div class="card shadow-sm bg-white rounded">
+            <div class="card-header font-weight-bold">
+              Oldest tasks without a due date
+            </div>
+            <div class="card-body">
+              {% set tasks=tasks_oldest %}
+              {% include "tasks_table.html" %}
+            </div>
+          </div>
+
+          <br><br>
+
+          <!-- last changes -->
+          <div class="card shadow-sm bg-white rounded">
+            <div class="card-header font-weight-bold">
+              Last 5 changes
+            </div>
+            <div class="card-body">
+              {% include "history_table.html" %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-2">
+
+          <!-- Statistics -->
+          <div class="card shadow-sm bg-white rounded" style="width: 10rem;">
+            <div class="card-header font-weight-bold">
+              Statistics
+            </div>
+            <div class="card-body">
+              <table>
+                <tr>
+                  <td>Tasks:</td>
+                  <td>&nbsp;</td>
+                  <td>{{tasks_count}}</td>
+                </tr>
+                <tr>
+                  <td>Projects:</td>
+                  <td>&nbsp;</td>
+                  <td>{{projects_count}}</td>
+                </tr>
+                <tr>
+                  <td>Customers:</td>
+                  <td>&nbsp;</td>
+                  <td>{{customers_count}}</td>
+                </tr>
+                <tr>
+                  <td>Partners:</td>
+                  <td>&nbsp;</td>
+                  <td>{{partners_count}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <br><br>
+
+          <!-- Open Tasks/Requests -->
+          <div class="card shadow-sm bg-white rounded" style="width: 10rem;">
+            <div class="card-header font-weight-bold">
+              Open
+            </div>
+            <div class="card-body">
+              <table>
+                <tr>
+                  <td>Tasks:</td>
+                  <td>&nbsp;</td>
+                  <td>{{open_tasks_count}}</td>
+                </tr>
+                <tr>
+                  <td>Requests: </td>
+                  <td>&nbsp;</td>
+                  <td>{{open_requests_count}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <br><br>
+
+          <!-- TODO: Weekly
+          <div class="card shadow-sm bg-white rounded" style="width: 10rem;">
+            <div class="card-header font-weight-bold">
+              Current Weekly
+            </div>
+            <div class="card-body">
+              <table>
+                <tr>
+                  <td>Highlights:</td>
+                  <td>&nbsp;</td>
+                  <td>{{hightlights_cont}}0</td>
+                </tr>
+                <tr>
+                  <td>Lowlights:</td>
+                  <td>&nbsp;</td>
+                  <td>{{lowlights_count}}0</td>
+                </tr>
+                <tr>
+                  <td>Generel:</td>
+                  <td>&nbsp;</td>
+                  <td>{{generel_count}}0</td>
+                </tr>
+                <tr>
+                  <td>Upcoming:</td>
+                  <td>&nbsp;</td>
+                  <td>{{upcoming_count}}0</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
 {% endblock %}

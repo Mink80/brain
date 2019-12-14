@@ -7,34 +7,9 @@
   <h6>Last 25 changes</h6>
 
   <br>
-
-  {% if history_items %}
-    <div class="w-75 mx-auto">
-      <table class="table border-primary bg-light">
-        <thead class="thead-light">
-          <tr class="">
-            <th scope="col" style="width: 15%">Time</th>
-            <th scope="col" style="width: 10%">Operation</th>
-            <th scope="col" style="width: 10%">Model</th>
-            <th scope="col" style="width: 65%">Comment</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for h in history_items %}
-            <tr>
-              <td>{{h.time|shorttime}}</td>
-              <td>{{h.operation.name}}</td>
-              <td>{{h.model.name}}</td>
-              <td>{{h.comment}}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  {% else %}
-    No items in history.
-  {% endif %}
-
+  <div class="w-75 mx-auto">
+    {% include "history_table.html" %}
+  </div>
 </div>
 
 {% endblock %}
