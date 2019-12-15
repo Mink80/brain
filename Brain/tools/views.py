@@ -20,7 +20,9 @@
 from flask import Blueprint, render_template, url_for, request
 from Brain.models import HistoryItem, Task
 from Brain.types import Weekly
-from Brain.lib import str_to_int
+from Brain.lib import str_to_int, get_start_and_end_date_from_calendar_week, \
+                            weeks_for_year, number_of_next_week, year_of_next_week, \
+                            number_of_prev_week, year_of_prev_week
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import calendar
@@ -28,31 +30,6 @@ import re
 
 tools_blueprint = Blueprint('tools',__name__,
                             template_folder='templates')
-
-
-def get_start_and_end_date_from_calendar_week(year, calendar_week):
-    monday = datetime.strptime(f'{year}-{calendar_week-1}-1', "%Y-%W-%w").date()
-    return monday, monday + timedelta(days=6.9)
-
-def weeks_for_year(year):
-    # 04 Jan is per definition in the 1st week, makes 28th of Dec a day of the last week of a year
-    last_week = date(year, 12, 28)
-    # [1] is the number of week
-    return last_week.isocalendar()[1]
-
-def number_of_next_week(date):
-    return (date + relativedelta(days=7)).isocalendar()[1]
-
-def year_of_next_week(date):
-    if number_of_next_week(date) > 50 and int((date + timedelta(days=7)).month == 1):
-        return date.year
-    return (date + timedelta(days=7)).year
-
-def number_of_prev_week(date):
-    return (date - timedelta(days=7)).isocalendar()[1]
-
-def year_of_prev_week(date):
-    return (date - timedelta(days=7)).year
 
 
 @tools_blueprint.route('/search', methods=['POST', 'GET'])

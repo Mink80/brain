@@ -21,6 +21,9 @@ from flask import url_for
 from Brain import db, crypter
 from Brain.models import Task, Project, HistoryItem, Type, Weekly, Operation, Model
 from Brain.tasks.forms import TaskForm
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
+import calendar
 import re
 
 # expects a crypted url in origin
@@ -219,3 +222,33 @@ def str_to_int(string):
         return int(string)
     else:
         return False
+
+
+def get_start_and_end_date_from_calendar_week(year, calendar_week):
+    monday = datetime.strptime(f'{year}-{calendar_week-1}-1', "%Y-%W-%w").date()
+    return monday, monday + timedelta(days=6.9)
+
+
+def weeks_for_year(year):
+    # 04 Jan is per definition in the 1st week, makes 28th of Dec a day of the last week of a year
+    last_week = date(year, 12, 28)
+    # [1] is the number of week
+    return last_week.isocalendar()[1]
+
+
+def number_of_next_week(date):
+    return (date + relativedelta(days=7)).isocalendar()[1]
+
+
+def year_of_next_week(date):
+    if number_of_next_week(date) > 50 and int((date + timedelta(days=7)).month == 1):
+        return date.year
+    return (date + timedelta(days=7)).year
+
+
+def number_of_prev_week(date):
+    return (date - timedelta(days=7)).isocalendar()[1]
+
+
+def year_of_prev_week(date):
+    return (date - timedelta(days=7)).year
