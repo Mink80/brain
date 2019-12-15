@@ -21,6 +21,7 @@ from flask import url_for
 from Brain import db, crypter
 from Brain.models import Task, Project, HistoryItem, Type, Weekly, Operation, Model
 from Brain.tasks.forms import TaskForm
+import re
 
 # expects a crypted url in origin
 def build_redirect_url(origin, alternative):
@@ -212,3 +213,9 @@ def partner_changes(partner, partner_form):
         changes += "comment "
 
     return changes
+
+def str_to_int(string):
+    if (isinstance(string, str) and re.search("^\d+$", string)):
+        return int(string)
+    else:
+        return False

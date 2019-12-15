@@ -20,6 +20,7 @@
 from flask import Blueprint, render_template, url_for, request
 from Brain.models import HistoryItem, Task
 from Brain.types import Weekly
+from Brain.lib import str_to_int
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import calendar
@@ -66,10 +67,24 @@ def search():
                             no_actions_in_tasktable=True)
 
 
-@tools_blueprint.route('/history')
-def history():
-    history_items = HistoryItem.query.order_by(HistoryItem.id.desc()).limit(25).all()
-    return render_template('/tools/history.html', history_items=history_items)
+@tools_blueprint.route('/history/', defaults={'page':"1"})
+@tools_blueprint.route('/history/<page>')
+def history(page):
+    #TODO: settings?
+    maxpages = 50
+    items_per_page = 20
+
+    page = str_to_int(page)
+    if page and page > 0 and page <= maxpages:
+        history_items = HistoryItem.query.order_by(HistoryItem.id.desc()). \
+                                        paginate(page, items_per_page, False)
+
+        return render_template('/tools/history.html', history_items=history_items.items,
+                                                        page=page,
+                                                        maxpages=maxpages,
+                                                        items_per_page=items_per_page)
+    else:
+        return render_template('400.html'), 400
 
 
 @tools_blueprint.route('weekly', defaults={'week': None, 'year': None},

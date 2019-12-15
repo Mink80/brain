@@ -4,11 +4,40 @@
 
 <div class="w-100 p-5 small mx-auto">
   <h5>History</h5>
-  <h6>Last 25 changes</h6>
+  <h6>Page {{page}}</h6>
 
   <br>
-  <div class="w-75 mx-auto shadow bg-white rounded">
-    {% include "history_table.html" %}
+  <div class="w-75 mx-auto">
+    <div class="shadow bg-white rounded w-100 mx-auto">
+      {% include "history_table.html" %}
+    </div>
+
+    <!-- Navigation arrows through the weeks -->
+    <div class="mx-auto w-100 p-0">
+      <div class="row mx-auto w-100 p-0">
+        <div class="col mx-auto w-100 p-0 text-left">
+          {% if page > 1 %}
+            <a class="text-decoration-none" href="{{url_for('tools.history', page=page-1)}}">
+              <img src="{{url_for('static', filename='arrow_left.png')}}">
+              previous
+            </a>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+        <div class="col mx-auto w-100 p-0 text-right">
+          {% if (page < maxpages-1) and items_per_page == history_items|length %}
+            <a class="text-decoration-none" href="{{url_for('tools.history', page=page+1)}}">
+              next
+              <img src="{{url_for('static', filename='arrow_right.png')}}">
+            </a>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
