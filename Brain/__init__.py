@@ -33,15 +33,35 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.DEBUG)
 
 # Forms config
+# TODO!
 app.config['SECRET_KEY'] = 'foobar'
-basedir = os.path.abspath(os.path.dirname(__file__))
-dbdir = os.path.join(basedir, "database")
 
 # DB Config
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(dbdir,"data.sqlite")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# SQLite
+#basedir = os.path.abspath(os.path.dirname(__file__))
+#dbdir = os.path.join(basedir, "database")
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(dbdir,"data.sqlite")
+
+# PostgreSQL
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://user:pass@dbhost/dbname'
+
+# MySQL (there is an issue with mysql. it seems it does not like unique=True in db models)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:pass@dbhost/dbname'
+
+# per environment
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# lets check if the db is working
+try:
+    # to check database we will execute raw query
+    db.create_all()
+    log.info("Database connected.")
+except Exception as e:
+    log.error("Error connecting with database.")
 
 # for DB Migration
 # before running migrations execute in cmd.exe:

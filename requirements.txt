@@ -15,7 +15,10 @@ itsdangerous==1.1.0
 Jinja2==2.10.3
 Mako==1.1.0
 MarkupSafe==1.1.1
+psycopg2==2.8.5
 pycparser==2.19
+PyMySQL==0.9.3
+pyOpenSSL==19.1.0
 python-dateutil==2.8.0
 python-editor==1.0.4
 six==1.12.0
