@@ -54,7 +54,8 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') \
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:pass@dbhost/dbname'
 
 # per environment
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
