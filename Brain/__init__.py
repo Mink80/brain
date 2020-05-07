@@ -90,10 +90,6 @@ def short_time(longtime):
 
 app.jinja_env.filters['shorttime'] = short_time
 
-# cryptography key generation
-key = Fernet.generate_key()
-crypter = Fernet(key)
-
 # flask blueprints
 from Brain.tasks.views import tasks_blueprint
 from Brain.customers.views import customers_blueprint
