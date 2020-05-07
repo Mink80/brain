@@ -32,9 +32,13 @@ app = Flask(__name__)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.DEBUG)
 
+# cryptography key generation
+key = Fernet.generate_key()
+crypter = Fernet(key)
+
 # Forms config
-# TODO!
-app.config['SECRET_KEY'] = 'foobar'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') \
+    if os.getenv('SECRET_KEY') else key.decode()
 
 # DB Config
 
