@@ -2,7 +2,7 @@ alembic==1.2.1
 certifi==2019.9.11
 cffi==1.13.1
 Click==7.0
-cryptography==2.8
+cryptography==3.2
 dominate==2.4.0
 Flask==1.1.1
 Flask-Bootstrap==3.3.7.1
