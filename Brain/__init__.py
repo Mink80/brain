@@ -81,3 +81,20 @@ app.register_blueprint(customers_blueprint, url_prefix='/customers')
 app.register_blueprint(partners_blueprint, url_prefix="/partners")
 app.register_blueprint(projects_blueprint, url_prefix="/projects")
 app.register_blueprint(tools_blueprint, url_prefix="/tools")
+
+# Database initialization
+def init_db():
+    """Initialize the database if it doesn't exist or is empty."""
+    db_path = os.path.join(dbdir, "data.sqlite")
+
+    # Check if database file doesn't exist or is empty
+    if not os.path.exists(db_path) or os.path.getsize(db_path) == 0:
+        with app.app_context():
+            # Create all tables
+            db.create_all()
+            print(f"Database initialized successfully at {db_path}")
+    else:
+        print(f"Database already exists at {db_path}")
+
+# Initialize database on startup
+init_db()
