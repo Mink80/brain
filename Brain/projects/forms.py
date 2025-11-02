@@ -36,14 +36,14 @@ class ProjectForm(FlaskForm):
 
 
 class ProjectInfoForm(FlaskForm):
-    opp_number = TextField('Opportunity', render_kw={"placeholder": "Opp number"})
+    opp_number = StringField('Opportunity', render_kw={"placeholder": "Opp number"})
     partner = SelectField(u'Partner', coerce=int, )
     notes = TextAreaField(id="summernote")
     submit_project_info = SubmitField("Save")
 
 
 class RenameForm(FlaskForm):
-    new_name = TextField('New Name', validators=[DataRequired()])
+    new_name = StringField('New Name', validators=[DataRequired()])
     partner = SelectField(u'Partner', coerce=int)
     origin = HiddenField()
     edit_id = HiddenField()
