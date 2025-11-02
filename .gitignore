@@ -5,3 +5,4 @@ migrations
 *.sqlite
 *.DS_Store
 *.sqlite-journal
+venv/
